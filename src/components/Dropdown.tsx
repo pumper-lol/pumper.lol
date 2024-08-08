@@ -5,11 +5,11 @@ type DropdownProps = {
   label: string;
   options: string[];
   selected: string | null;
-  onSelect: (option: string) => void;
+  onSelect?: (option: string) => void;
 };
 
 const Dropdown: FC<DropdownProps> = (
-  { label, options, onSelect, selected } = { onSelect(_: string) {} },
+  { label, options, onSelect, selected } = {},
 ) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(selected);

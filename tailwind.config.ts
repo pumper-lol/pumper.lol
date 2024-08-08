@@ -8,10 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      boxShadow: {
+        "glow-sm": "0px 0px 4px 0px",
+        "glow-sm-a": "0px 1px 4px 0px #26282E5E",
+      },
+      fontFamily: {
+        dmSans: ["var(--font-dm-sans)", "sans-serif"],
+        dokdo: ["var(--font-dokdo)", "cursive"],
       },
     },
   },

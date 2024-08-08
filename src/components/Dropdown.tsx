@@ -9,14 +9,14 @@ type DropdownProps = {
 };
 
 const Dropdown: FC<DropdownProps> = (
-  { label, options, onSelect, selected } = {},
+  { label, options, onSelect, selected },
 ) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(selected);
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
-    onSelect(option);
+    onSelect && onSelect(option);
     setIsOpen(false);
   };
 

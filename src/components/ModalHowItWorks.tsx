@@ -18,20 +18,35 @@ export default function ModalHowItWorks({
           How it works
         </h2>
         <p className="mb-4">
-          Pumper stops rugs by ensuring the security of each and every token
-          that is created. Every coin on pumper is released fairly, without a
-          team allocation or presale.
+          <span className="font-bold">Pumper.lol</span> is an innovative
+          platform designed to empower users by allowing them to create and
+          trade meme coins on the EduChain network. This project ensures fair
+          and secure token launches, providing a seamless and entertaining
+          trading experience.
         </p>
         <ol className="list-decimal list-inside space-y-2">
-          <li>Choose a coin you like</li>
-          <li>Purchase it on the bonding curve</li>
-          <li>To lock up your gains or losses, sell whenever you choose</li>
           <li>
-            The market valuation of the company hits $69k when enough investors
-            purchase it on the bonding curve
+            <span className="font-bold">Pick a Coin:</span> Browse the platform
+            and choose a meme coin that piques your interest.
           </li>
           <li>
-            After that, $12k of liquidity is burned and deposited in raydium
+            <span className="font-bold">Buy the Coin:</span> Purchase the
+            selected coin using a bonding curve mechanism.
+          </li>
+          <li>
+            <span className="font-bold">Sell Anytime:</span> You have the
+            freedom to sell your coins at any moment, securing your profits or
+            minimizing your losses.
+          </li>
+          <li>
+            <span className="font-bold">Market Cap Milestone:</span> When the
+            coin reaches a market cap of $32k, a significant liquidity event
+            occurs.
+          </li>
+          <li>
+            <span className="font-bold">Liquidity Injection:</span> $8k of
+            liquidity is deposited into any decentralized exchange (DEX) on the
+            EduChain network.
           </li>
         </ol>
 

@@ -1,18 +1,17 @@
-import Layout from "@/components/Layout";
 import CoinCard from "@/components/CoinCard";
 import Dropdown from "@/components/Dropdown";
-import { getCoins } from "@/helpers/request";
 import HeroSearchBar from "@/components/HeroSearchBar";
 import CoinCardKing from "@/components/CoinCardKing";
 import Image from "next/image";
 import Sticker from "@/images/sticker.png";
+import { getCoins } from "@/actions/coin";
 
-function Home() {
-  const coins: Coin[] = getCoins();
+async function Home() {
+  const coins: Coin[] = await getCoins({});
 
   return (
-    <Layout>
-      <section className="flex flex-col-reverse md:flex-row items-stretch px-4 py-12">
+    <div>
+      <section className="flex flex-col-reverse md:flex-row items-stretch container mx-auto px-4 py-12">
         <div className="max-w-md">
           <h1 className="text-4xl font-bold font-dokdo">
             Join the Meme Revolution
@@ -34,11 +33,11 @@ function Home() {
             src={Sticker}
             alt={"pumper.lol sticker"}
             fill
-            className="object-contain"
+            className="object-contain object-center"
           />
         </div>
       </section>
-      <section className="px-4 py-12">
+      <section className="container mx-auto px-4 py-12">
         <div className="flex items-center gap-4 mb-4">
           <div className="text-lg font-bold">
             All coins
@@ -76,7 +75,7 @@ function Home() {
           </div>
         </div>
       </section>
-    </Layout>
+    </div>
   );
 }
 

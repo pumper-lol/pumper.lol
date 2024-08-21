@@ -2,7 +2,7 @@
 const nextConfig = {
 	images: {
 		dangerouslyAllowSVG: true,
-		domains: ['placehold.co'],
+		domains: ['placehold.co', 'orange-basic-bandicoot-201.mypinata.cloud'],
 	}
 };
 

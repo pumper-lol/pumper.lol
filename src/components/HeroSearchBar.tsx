@@ -1,6 +1,14 @@
+"use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 function HeroSearchBar() {
+  const router = useRouter();
+  function search(event) {
+    router.push({
+      query: { search: event.target.value },
+    });
+  }
   return (
     <div className="flex items-center bg-gray-900 p-2 rounded-full shadow-custom-shadow">
       <div className="relative flex items-center flex-grow">
@@ -21,7 +29,8 @@ function HeroSearchBar() {
         <input
           type="text"
           placeholder="Search token"
-          className="w-full pl-10 pr-4 py-2 bg-gray-900 text-gray-300 rounded-l-full focus:outline-none"
+          className="w-full pl-10 pr-4 py-2 bg-gray-900 text-gray-300 focus:outline-none"
+          onInput={search}
         />
       </div>
       <button className="bg-[#EFCF5A] text-gray-900 px-6 py-2 rounded-full font-medium">

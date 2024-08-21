@@ -1,26 +1,32 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import MobileNav from "@/components/MobileNav";
 import ModalHowItWorks from "@/components/ModalHowItWorks";
+import Link from "next/link";
+import { ButtonConnectWallet } from "@/components/ButtonConnectWallet";
+import Image from "next/image";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
-  const [modalHowItWorksIsOpen, setModalHowItWorksIsOpen] = useState(true);
+export default function Layout({ children }: LayoutProps) {
+  const { modalHowItWorksIsOpen, openHowItWorksModal, closeHowItWorksModal } =
+    useHowItWorksModal();
   return (
-    <div className="min-h-screen overflow-y-auto bg-black text-white">
-      <header className="p-4 flex justify-between items-center">
+    <div className="min-h-screen overflow-y-auto text-white">
+      <header className="container mx-auto p-4 flex justify-between items-center">
         <div className="flex justify-between items-center relative h-14 w-full">
-          <div className="text-2xl font-bold font-dokdo absolute ml-4">
-            PumpeR
+          <div className="text-2xl font-bold font-dokdo absolute">
+            <Link href="/">
+              <Image src="/logo.svg" alt="Pumper logo" width={74} height={24} />
+            </Link>
           </div>
           <nav className="w-full hidden md:block">
             <ul className="flex justify-center gap-3 mx-auto w-full">
               <li>
                 <button
-                  onClick={() => setModalHowItWorksIsOpen(true)}
+                  onClick={openHowItWorksModal}
                   className="hover:underline font-medium"
                 >
                   How it Works
@@ -38,24 +44,51 @@ const Layout = ({ children }: LayoutProps) => {
               </li>
             </ul>
           </nav>
-          <div className="flex gap-2 absolute right-0 mr-4">
-            <button className="bg-transparent border-2 border-white border-opacity-40 text-sm font-medium px-4 py-2 rounded-full">
+          <div className="flex gap-2 absolute right-0">
+            <Link
+              href="/create"
+              className="bg-transparent border-2 border-white border-opacity-40 text-sm font-medium px-4 py-2 rounded-full"
+            >
               Start a new coin
-            </button>
-            <button className="hidden md:block bg-yellow-500 border-2 border-yellow-500 border-opacity-10 text-gray-900 text-sm font-medium px-4 py-2 rounded-full">
-              Connect wallet
-            </button>
+            </Link>
+            <div className="hidden lg:block">
+              <ButtonConnectWallet />
+            </div>
           </div>
         </div>
         <MobileNav />
       </header>
       <main>{children}</main>
-      <ModalHowItWorks
-        isOpen={modalHowItWorksIsOpen}
-        close={() => setModalHowItWorksIsOpen(false)}
-      />
+      {modalHowItWorksIsOpen && (
+        <ModalHowItWorks close={closeHowItWorksModal} />
+      )}
     </div>
   );
-};
+}
 
-export default Layout;
+const SHOW_HOW_IT_WORKS_KEY = "showHowItWorks";
+function useHowItWorksModal() {
+  const [modalHowItWorksIsOpen, setModalHowItWorksIsOpen] = useState(false);
+
+  useEffect(
+    () =>
+      setModalHowItWorksIsOpen(
+        localStorage.getItem(SHOW_HOW_IT_WORKS_KEY) !== "false",
+      ),
+    [],
+  );
+
+  const openHowItWorksModal = () => {
+    setModalHowItWorksIsOpen(true);
+  };
+
+  const closeHowItWorksModal = () => {
+    setModalHowItWorksIsOpen(false);
+    localStorage.setItem(SHOW_HOW_IT_WORKS_KEY, "false");
+  };
+  return {
+    modalHowItWorksIsOpen,
+    openHowItWorksModal,
+    closeHowItWorksModal,
+  };
+}

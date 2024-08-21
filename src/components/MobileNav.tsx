@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
+import { ButtonConnectWallet } from "@/components/ButtonConnectWallet";
 
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
+      <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden">
         {!isOpen ? (
           <svg
             width="24"
@@ -70,9 +71,7 @@ export default function MobileNav() {
             </li>
           </ul>
           <div className="mt-16">
-            <button className="w-full bg-yellow-500 border-2 border-yellow-500 border-opacity-10 text-gray-900 text-sm font-medium px-4 py-2 rounded-full">
-              Connect wallet
-            </button>
+            <ButtonConnectWallet />
           </div>
         </div>
       )}

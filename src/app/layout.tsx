@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { DM_Sans, Dokdo } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
+import Layout from "@/components/Layout";
+// import { Providers } from "@/components/Providers";
+import { AppRainbowKitProvider } from "@/providers/wagmi";
+import { headers } from "next/headers";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -24,10 +28,13 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const cookie = headers().get("cookie");
   return (
     <html lang="en">
-      <body className={`${dmSans.className} ${dokdo.variable}`}>
-        {children}
+      <body className={`${dmSans.className} ${dokdo.variable} bg-[#000c05]`}>
+        <AppRainbowKitProvider cookie={cookie}>
+          <Layout>{children}</Layout>
+        </AppRainbowKitProvider>
       </body>
     </html>
   );

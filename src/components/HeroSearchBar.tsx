@@ -1,13 +1,23 @@
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function HeroSearchBar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
   function search(event) {
-    router.push({
-      query: { search: event.target.value },
-    });
+    router.push("/" + "?" + createQueryString("search", event.target.value));
   }
   return (
     <div className="flex items-center bg-gray-900 p-2 rounded-full shadow-custom-shadow">

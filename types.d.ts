@@ -10,6 +10,7 @@ interface CoinInput {
   symbol: string;
   description: string;
   twitterUrl?: string;
+  discordUrl?: string;
   telegramUrl?: string;
   websiteUrl?: string;
   creator: {
@@ -36,6 +37,7 @@ interface Coin {
   description: string;
   imageIpfsHash: string;
   twitterUrl?: string;
+  discordUrl?: string;
   telegramUrl?: string;
   websiteUrl?: string;
   creator: Creator;

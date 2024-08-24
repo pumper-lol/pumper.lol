@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.4",
     "@prisma/client": "^5.18.0",
     "@rainbow-me/rainbowkit": "^2.1.4",
     "apexcharts": "^3.52.0",
     "axios": "^1.7.4",
     "clsx": "^2.1.1",
     "ethers": "^6.13.2",
+    "graphql": "^16.9.0",
     "next": "14.2.5",
     "pinata": "^0.2.0",
     "react": "^18",

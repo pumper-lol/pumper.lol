@@ -2,7 +2,10 @@
 const nextConfig = {
 	images: {
 		dangerouslyAllowSVG: true,
-		domains: ['placehold.co', 'orange-basic-bandicoot-201.mypinata.cloud'],
+		remotePatterns: [
+			{hostname: 'placehold.co'},
+			{hostname: 'orange-basic-bandicoot-201.mypinata.cloud'}
+		],
 	}
 };
 

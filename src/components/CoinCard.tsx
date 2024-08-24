@@ -3,7 +3,13 @@ import { formatAddress } from "@/helpers/ethers";
 import { CoinIcon } from "@/components/CoinIcon";
 import Link from "next/link";
 
-export default function CoinCard({ coin }: { coin: Coin }) {
+export default function CoinCard({
+  coin,
+  baseUrl,
+}: {
+  coin: Coin;
+  baseUrl: string;
+}) {
   // const isLive = Math.random() >= 0.5;
   const isLive = false;
   return (
@@ -11,7 +17,7 @@ export default function CoinCard({ coin }: { coin: Coin }) {
       <div className="flex items-stretch gap-4">
         <Link href={`/c/${coin.address}`}>
           <div className="h-28 w-28 shrink-0 relative">
-            <CoinIcon coin={coin} size={112} />
+            <CoinIcon coin={coin} size={112} baseUrl={baseUrl} />
             {isLive && (
               <span className="text-xs text-lime-400 bg-[#403F3D] rounded-full px-1.5 py-0.5 inline-flex gap-2 items-center absolute left-0.5 -top-1">
                 <span className="bg-lime-400 h-1.5 w-1.5 shadow-[#93EF5AE3] shadow-glow-sm rounded-full"></span>

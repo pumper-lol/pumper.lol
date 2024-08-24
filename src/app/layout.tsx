@@ -3,9 +3,9 @@ import { DM_Sans, Dokdo } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import Layout from "@/components/Layout";
-// import { Providers } from "@/components/Providers";
 import { AppRainbowKitProvider } from "@/providers/wagmi";
 import { headers } from "next/headers";
+import { AppApolloProvider } from "@/providers/AppApolloProvider";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -32,9 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.className} ${dokdo.variable} bg-[#000c05]`}>
-        <AppRainbowKitProvider cookie={cookie}>
-          <Layout>{children}</Layout>
-        </AppRainbowKitProvider>
+        <AppApolloProvider>
+          <AppRainbowKitProvider cookie={cookie}>
+            <Layout>{children}</Layout>
+          </AppRainbowKitProvider>
+        </AppApolloProvider>
       </body>
     </html>
   );

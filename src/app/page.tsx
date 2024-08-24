@@ -1,10 +1,10 @@
-import CoinCard from "@/components/CoinCard";
-import Dropdown from "@/components/Dropdown";
 import HeroSearchBar from "@/components/HeroSearchBar";
 import CoinCardKing from "@/components/CoinCardKing";
 import Image from "next/image";
 import Sticker from "@/images/sticker.png";
 import { getCoins } from "@/actions/coin";
+import { CoinList } from "@/components/CoinList";
+import { env } from "process";
 
 async function Home() {
   const coins: Coin[] = await getCoins({});
@@ -38,42 +38,11 @@ async function Home() {
         </div>
       </section>
       <section className="container mx-auto px-4 py-12">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="text-lg font-bold">
-            All coins
-            <div className="border-b-2 border-l-2 border-purple-300 h-1"></div>
-          </div>
-          <div className="text-lg font-bold">For you</div>
-        </div>
-
-        <div className="">
-          <div className="flex items-center mb-12">
-            <span className="">
-              <label htmlFor="">
-                Include NSFW
-                <input type="checkbox" className="ml-2" />
-              </label>
-            </span>
-            <Dropdown
-              label={"Sort"}
-              options={["Bump order", "Last reply", "Reply count"]}
-              selected={"Bump order"}
-              // onSelect={() => {}}
-            />
-            <Dropdown
-              label={"Order"}
-              options={["Desc", "Asc"]}
-              selected={"Desc"}
-              // onSelect={() => {}}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {coins.map((coin, index) => (
-              <CoinCard key={index} coin={coin} />
-            ))}
-          </div>
-        </div>
+        <CoinList
+          coins={coins}
+          baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL}
+          getCoins={getCoins}
+        />
       </section>
     </div>
   );

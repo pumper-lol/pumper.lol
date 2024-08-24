@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
     useHowItWorksModal();
   return (
     <div className="min-h-screen overflow-y-auto text-white">
-      <header className="container mx-auto p-4 flex justify-between items-center">
+      <header className="container mx-auto p-4 flex justify-between items-center gap-2">
         <div className="flex justify-between items-center relative h-14 w-full">
           <div className="text-2xl font-bold font-dokdo absolute">
             <Link href="/">

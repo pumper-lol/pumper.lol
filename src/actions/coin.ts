@@ -75,13 +75,13 @@ export async function getCoinMetadata(id: string): Promise<Metadata> {
 export async function getCoins({
   page,
   search,
-}: { page?: number; search?: string } = {}) {
+}: { page?: number; search?: string | null } = {}) {
   const where = search
     ? {
         OR: [
-          { address: search },
-          { symbol: search },
-          { name: { contains: search } },
+          { address: { contains: search, mode: "insensitive" } },
+          { symbol: { contains: search, mode: "insensitive" } },
+          { name: { contains: search, mode: "insensitive" } },
         ],
       }
     : {};

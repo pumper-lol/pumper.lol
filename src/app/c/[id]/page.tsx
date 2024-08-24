@@ -5,6 +5,8 @@ import { CoinIcon } from "@/components/CoinIcon";
 import { CoinReplies } from "@/components/coin/CoinReplies";
 import { IoLogoChrome, IoLogoDiscord, IoLogoTwitter } from "react-icons/io5";
 import { FaTelegram } from "react-icons/fa6";
+import { env } from "process";
+import { CoinChart } from "@/components/CoinChart";
 
 interface PageProps {
   params: {
@@ -21,7 +23,7 @@ export async function generateMetadata({ params: { id } }: PageProps) {
 }
 
 export default async function CoinViewPage({ params: { id } }: PageProps) {
-  const coin = await getCoin(id);
+  const coin = (await getCoin(id)) as Coin;
   if (!coin) return <div>Not found</div>;
 
   return (
@@ -98,8 +100,8 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
       </div>
 
       <div className="grid md:grid-cols-3 lg:grid-cols-5">
-        <div className="md:col-span-1 lg:col-span-2 flex flex-col gap-4">
-          <CoinTrade coin={coin} />
+        <div className="md:col-span-1 flex flex-col gap-4">
+          <CoinTrade coin={coin} baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL} />
 
           <div className="px-4 flex flex-col gap-2">
             <div className="flex flex-col gap-1">
@@ -158,7 +160,8 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
             </div>
           </div>
         </div>
-        <div className="md:col-span-2 lg:col-span-3 py-4">
+        <div className="md:col-span-2 lg:col-span-4 py-4">
+          <CoinChart coin={coin} />
           <CoinReplies />
         </div>
       </div>

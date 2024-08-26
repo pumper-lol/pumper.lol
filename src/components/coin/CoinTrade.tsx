@@ -13,18 +13,19 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
     type: "BUY",
     amount: "0",
   });
-  const { buyCoin, sellCoin, fromTokenCalculatePrice } = usePumperToken(
-    coin.address as Address,
-  );
+  const { buyCoin, sellCoin, fromTokenCalculatePrice, fromEduCalculatePrice } =
+    usePumperToken(coin.address as Address);
   const [amount, setAmount] = useState<bigint>();
 
   useEffect(() => {
-    fromTokenCalculatePrice(form.amount).then(setAmount);
-  }, [form.amount, fromTokenCalculatePrice]);
+    if (form.type === "BUY")
+      fromTokenCalculatePrice(form.amount).then(setAmount);
+    else fromEduCalculatePrice(form.amount).then(setAmount);
+  }, [form, fromTokenCalculatePrice, fromEduCalculatePrice]);
 
   async function submit(e) {
     e.preventDefault();
-    if (loading) return;
+    if (loading || !form.amount) return;
 
     setLoading(true);
     try {
@@ -74,22 +75,45 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
               }))
             }
           />
-          <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-800 uppercase py-2">
-            EDU
-            <span className="relative shrink-0">
-              <Image src={"/edu.svg"} alt="Edu icon" width={20} height={20} />
+          {form.type === "SELL" && (
+            <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-800 uppercase py-2">
+              {coin.symbol}
+              <CoinIcon coin={coin} size={20} baseUrl={baseUrl} />
             </span>
-          </span>
+          )}
+          {form.type === "BUY" && (
+            <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-800 uppercase py-2">
+              EDU
+              <span className="relative shrink-0">
+                <Image src={"/edu.svg"} alt="Edu icon" width={20} height={20} />
+              </span>
+            </span>
+          )}
         </div>
 
         {amount && (
           <p className="text-gray-400 text-sm">
             {formatEther(amount)}
 
-            <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-300 uppercase py-2">
-              {coin.symbol}
-              <CoinIcon coin={coin} size={20} baseUrl={baseUrl} />
-            </span>
+            {form.type === "BUY" && (
+              <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-300 uppercase py-2">
+                {coin.symbol}
+                <CoinIcon coin={coin} size={20} baseUrl={baseUrl} />
+              </span>
+            )}
+            {form.type === "SELL" && (
+              <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-800 uppercase py-2">
+                EDU
+                <span className="relative shrink-0">
+                  <Image
+                    src={"/edu.svg"}
+                    alt="Edu icon"
+                    width={20}
+                    height={20}
+                  />
+                </span>
+              </span>
+            )}
           </p>
         )}
 

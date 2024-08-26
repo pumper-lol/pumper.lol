@@ -52,3 +52,52 @@ type Reply = {
   likes: number;
   parentId: string;
 };
+
+type Address = {
+  ens_domain_name: string | null;
+  hash: string;
+  implementation_address: string | null;
+  implementation_name: string | null;
+  implementations: any[];
+  is_contract: boolean;
+  is_verified: boolean;
+  metadata: any | null;
+  name: string;
+  private_tags: any[];
+  public_tags: any[];
+  watchlist_names: any[];
+};
+
+type Token = {
+  address: string;
+  circulating_market_cap: number | null;
+  decimals: string;
+  exchange_rate: number | null;
+  holders: string;
+  icon_url: string | null;
+  name: string;
+  symbol: string;
+  total_supply: string;
+  type: string;
+  volume_24h: number | null;
+};
+
+type CoinData = {
+  address: Address;
+  token: Token;
+  token_id: string | null;
+  value: string;
+};
+
+interface Trade {
+  amount: string;
+  block_number: string;
+  contractId_: string;
+  id: string;
+  price: string;
+  timestamp_: string;
+  token: string;
+  transactionHash_: string;
+  seller?: string;
+  buyer?: string;
+}

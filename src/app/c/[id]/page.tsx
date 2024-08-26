@@ -7,6 +7,8 @@ import { IoLogoChrome, IoLogoDiscord, IoLogoTwitter } from "react-icons/io5";
 import { FaTelegram } from "react-icons/fa6";
 import { env } from "process";
 import { CoinChart } from "@/components/CoinChart";
+import { CoinHolder } from "@/components/coin/CoinHolder";
+import { CoinTrades } from "@/components/coin/CoinTrades";
 
 interface PageProps {
   params: {
@@ -138,8 +140,9 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
                 burned. progression increases as the price goes up.
               </p>
               <p className="">
-                there are 791,421,697 tokens still available for sale in the
-                bonding curve and there is{" "}
+                there are{" "}
+                <span className="text-green-500">791,421,697 tokens</span> still
+                available for sale in the bonding curve and there is{" "}
                 <span className="text-green-500">10,000 EDU</span> in the
                 bonding curve.
               </p>
@@ -148,20 +151,12 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
 
           <div className="grid gap-2">
             <div className="px-4 text-gray-200">Holding distribution</div>
-            <div className="rounded-md bg-green-900 bg-opacity-60 divide-y divide-gray-600 px-4">
-              <div className="flex justify-between py-3 text-gray-300">
-                <span className="">Holder</span>
-                <span className="">Percentage</span>
-              </div>
-              <div className="flex justify-between py-3">
-                <span className="text-yellow-500">1asf...adsd</span>
-                <span className="text-gray-300">98%</span>
-              </div>
-            </div>
+            <CoinHolder address={coin.address} />
           </div>
         </div>
         <div className="md:col-span-2 lg:col-span-4 py-4">
           <CoinChart coin={coin} />
+          <CoinTrades coin={coin} />
           <CoinReplies />
         </div>
       </div>

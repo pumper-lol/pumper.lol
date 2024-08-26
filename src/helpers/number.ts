@@ -1,3 +1,5 @@
+import { formatEther } from "viem";
+
 export function humanShortHandNumber(num: number) {
   if (!num) return "0";
 
@@ -19,4 +21,8 @@ export function humanShortHandNumber(num: number) {
 export function formatNumber(num: number) {
   if (!num) return "0";
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function coinRate(amount: number, price: number) {
+  return (formatEther(BigInt(amount)) / formatEther(BigInt(price))).toFixed(3);
 }

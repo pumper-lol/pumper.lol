@@ -1,60 +1,66 @@
 "use client";
-import { gql, useQuery } from "@apollo/client";
-import { useEffect } from "react";
-
-const GET_TRADES = gql`
-  query Trades($token: String!) {
-    sells(where: { token: $token }) {
-      amount
-      block_number
-      contractId_
-      id
-      price
-      seller
-      timestamp_
-      token
-      transactionHash_
-    }
-    buys(where: { token: $token }) {
-      amount
-      block_number
-      buyer
-      id
-      contractId_
-      price
-      timestamp_
-      token
-      transactionHash_
-    }
-  }
-`;
-
-interface Trade {
-  amount: string;
-  block_number: string;
-  contractId_: string;
-  id: string;
-  price: string;
-  timestamp_: string;
-  token: string;
-  transactionHash_: string;
-  seller?: string;
-  buyer?: string;
-}
+import { useQuery } from "@apollo/client";
+import { useMemo } from "react";
+import { formatEther } from "viem";
+import Chart from "react-apexcharts";
+import { GET_TRADES } from "@/helpers/graphqlQueries";
 
 export function CoinChart({ coin }: { coin: Coin }) {
   const { loading, error, data } = useQuery<{ sells: Trade[]; buys: Trade[] }>(
     GET_TRADES,
     {
-      variables: { token: coin.address },
+      variables: { token: coin.address?.toLowerCase() },
     },
   );
 
-  useEffect(() => {
-    console.log(data, error, loading);
-  }, [data, error, loading]);
+  const history = useMemo(() => {
+    const _data = new Map<number, { x: Date; y: number[] }>();
+
+    if (!data) return [];
+
+    Object?.values(data)
+      ?.flat()
+      .forEach((trade: Trade) => {
+        const amount = +(
+          formatEther(BigInt(trade.amount)) / formatEther(BigInt(trade.price))
+        )?.toFixed(3);
+
+        const roundedTimestamp = Math.floor(trade.timestamp_ / 3600) * 3600; // 300 seconds = 5 minutes
+
+        const files = _data.get(roundedTimestamp);
+        if (!files) {
+          _data.set(roundedTimestamp, {
+            x: new Date(roundedTimestamp * 1000),
+            y: [amount],
+          });
+          return;
+        }
+        files?.y.push(amount);
+        _data.set(roundedTimestamp, files);
+      });
+
+    return Array.from(_data.values());
+  }, [data]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  return <div></div>;
+  return (
+    <div>
+      <Chart
+        height={350}
+        type="candlestick"
+        options={{
+          xaxis: {
+            type: "datetime",
+          },
+          yaxis: {
+            tooltip: {
+              enabled: true,
+            },
+          },
+        }}
+        series={[{ data: history }]}
+      />
+    </div>
+  );
 }

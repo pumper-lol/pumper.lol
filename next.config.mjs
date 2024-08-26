@@ -6,6 +6,15 @@ const nextConfig = {
 			{hostname: 'placehold.co'},
 			{hostname: 'orange-basic-bandicoot-201.mypinata.cloud'}
 		],
+	},
+	webpack: (config, options) => {
+		config.module.rules.push({
+			test: /\.(graphql|gql)/,
+			exclude: /node_modules/,
+			loader: "graphql-tag/loader"
+		})
+
+		return config
 	}
 };
 

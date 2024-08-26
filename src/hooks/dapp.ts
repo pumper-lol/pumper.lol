@@ -5,7 +5,11 @@ import {
   useSwitchChain,
   useWriteContract,
 } from "wagmi";
-import { readContract, waitForTransactionReceipt } from "@wagmi/core";
+import {
+  readContract,
+  waitForTransaction,
+  waitForTransactionReceipt,
+} from "@wagmi/core";
 import PumperFactory from "@/artifacts/PumperFactory.json";
 import { Address, Hash, parseEther } from "viem";
 import PumperToken from "@/artifacts/PumperToken.json";
@@ -97,14 +101,6 @@ export function usePumperToken(coinAddress: Address) {
     functionName: "circulatingSupply",
   });
 
-  // const convertEdu = useCallback(
-  //   (amount: string) => {
-  //     if (!price) return 0;
-  //     return price.mul(parseEther(amount));
-  //   },
-  //   [price],
-  // );
-
   function pumperTokenWrite(
     functionName: string,
     address: Address,
@@ -131,8 +127,7 @@ export function usePumperToken(coinAddress: Address) {
         functionName: "buyX",
         value: parseEther(amount),
       })) as Hash;
-      const receipt = await waitForTransactionReceipt(config, { hash: hash });
-      console.log(receipt);
+      await waitForTransactionReceipt(config, { hash: hash });
     } catch (e) {
       console.log(e);
       throw new Error("Failed to buy coin");
@@ -146,8 +141,16 @@ export function usePumperToken(coinAddress: Address) {
 
     try {
       if (!account.address) return;
+      const approvalHash = await pumperTokenWrite(
+        "approve",
+        coinAddress,
+        coinAddress,
+        parseEther(amount),
+      );
+      await waitForTransaction(config, { hash: approvalHash });
+
       const hash = await pumperTokenWrite(
-        "sellY",
+        "sellX",
         coinAddress,
         parseEther(amount),
       );

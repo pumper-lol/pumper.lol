@@ -2,7 +2,7 @@
 	"_format": "hh-sol-artifact-1",
 	"contractName": "PumperFactory",
 	"sourceName": "contracts/PumperFactory.sol",
-	"testnetAddress": "0xe818A9FF6fb28EC94794598b73938eA7ab42493a",
+	"testnetAddress": "0xA612ab0e8C9381e956459989f246DC760e0b28E3",
 	"abi": [
 		{
 			"anonymous": false,

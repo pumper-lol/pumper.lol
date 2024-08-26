@@ -11,7 +11,7 @@ export function CoinList({
 }: {
   coins: Coin[];
   baseUrl: string;
-  getCoins(props: { page?: number; search?: string | null }): Promise<Coin[]>;
+  getCoins(props: { page?: number; search?: string }): Promise<Coin[]>;
 }) {
   const params = useSearchParams();
   const [_coins, setCoins] = useState(coins);

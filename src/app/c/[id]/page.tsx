@@ -25,7 +25,7 @@ export async function generateMetadata({ params: { id } }: PageProps) {
 }
 
 export default async function CoinViewPage({ params: { id } }: PageProps) {
-  const coin = (await getCoin(id)) as Coin;
+  const coin = await getCoin(id);
   if (!coin) return <div>Not found</div>;
 
   return (
@@ -103,7 +103,10 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
 
       <div className="grid md:grid-cols-3 lg:grid-cols-5">
         <div className="md:col-span-1 flex flex-col gap-4">
-          <CoinTrade coin={coin} baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL} />
+          <CoinTrade
+            coin={coin}
+            baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL as string}
+          />
 
           <div className="px-4 flex flex-col gap-2">
             <div className="flex flex-col gap-1">

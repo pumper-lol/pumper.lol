@@ -14,18 +14,19 @@ export function CoinChart({ coin }: { coin: Coin }) {
   );
 
   const history = useMemo(() => {
-    const _data = new Map<number, { x: Date; y: number[] }>();
+    const _data = new Map<number, { x: Date; y: string[] }>();
 
     if (!data) return [];
 
     Object?.values(data)
       ?.flat()
       .forEach((trade: Trade) => {
-        const amount = +(
-          formatEther(BigInt(trade.amount)) / formatEther(BigInt(trade.price))
-        )?.toFixed(3);
+        const amount = parseInt(
+          formatEther(BigInt(trade.amount) / BigInt(trade.price)),
+        )?.toFixed(3) as string;
 
-        const roundedTimestamp = Math.floor(trade.timestamp_ / 3600) * 3600; // 300 seconds = 5 minutes
+        const roundedTimestamp =
+          Math.floor(parseInt(trade.timestamp_) / 3600) * 3600; // 300 seconds = 5 minutes
 
         const files = _data.get(roundedTimestamp);
         if (!files) {

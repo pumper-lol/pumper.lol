@@ -3,6 +3,8 @@
 import { pinata } from "@/helpers/pinata";
 import prisma from "@/helpers/prisma";
 import { findOrCreateCreator } from "@/actions/creator";
+import { Prisma, PrismaPromise } from "@prisma/client";
+import QueryMode = Prisma.QueryMode;
 
 export async function createCoin(form: FormData) {
   const data = (await pinata.upload.file(form.get("image") as File)) as {
@@ -29,7 +31,7 @@ export async function createCoin(form: FormData) {
         },
       },
     },
-  });
+  }) as unknown as PrismaPromise<Coin>;
 }
 
 export async function getCoin(id: string) {
@@ -40,7 +42,7 @@ export async function getCoin(id: string) {
     include: {
       creator: true,
     },
-  });
+  }) as unknown as PrismaPromise<Coin>;
 }
 
 type Metadata = {
@@ -75,22 +77,21 @@ export async function getCoinMetadata(id: string): Promise<Metadata> {
 export async function getCoins({
   page,
   search,
-}: { page?: number; search?: string | null } = {}) {
-  const where = search
-    ? {
-        OR: [
-          { address: { contains: search, mode: "insensitive" } },
-          { symbol: { contains: search, mode: "insensitive" } },
-          { name: { contains: search, mode: "insensitive" } },
-        ],
-      }
-    : {};
+}: { page?: number; search?: string } = {}) {
   return prisma.coin.findMany({
-    where: where,
+    where: search
+      ? {
+          OR: [
+            { address: { contains: search, mode: QueryMode.insensitive } },
+            { symbol: { contains: search, mode: QueryMode.insensitive } },
+            { name: { contains: search, mode: QueryMode.insensitive } },
+          ],
+        }
+      : {},
     include: {
       creator: true,
     },
     skip: page && page > 0 ? (page - 1) * 20 : 0,
     take: 20,
-  }) as Promise<Coin[]>;
+  }) as unknown as PrismaPromise<Coin[]>;
 }

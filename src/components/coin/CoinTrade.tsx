@@ -23,7 +23,7 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
     else fromEduCalculatePrice(form.amount).then(setAmount);
   }, [form, fromTokenCalculatePrice, fromEduCalculatePrice]);
 
-  async function submit(e) {
+  async function submit(e: any) {
     e.preventDefault();
     if (loading || !form.amount) return;
 

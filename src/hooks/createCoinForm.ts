@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEventHandler, FormEvent, useState } from "react";
 import * as yup from "yup";
 import { createCoin } from "@/actions/coin";
 import { useAccount } from "wagmi";
@@ -44,7 +44,7 @@ export function useCreateCoinForm() {
     setInput((prev) => ({ ...prev, [target.name]: target.value }));
   }
 
-  function setImage(e: ChangeEvent<HTMLInputElement>) {
+  function setImage(e: any) {
     const target = e.target as HTMLFormElement;
     if (!target.files?.length) return;
     setInput((prev) => ({ ...prev, image: target.files[0] }));
@@ -58,7 +58,7 @@ export function useCreateCoinForm() {
 
     try {
       await validate(input);
-    } catch (error) {
+    } catch (error: any) {
       setValidationErrors(error.errors);
       setLoading(false);
       return;
@@ -75,7 +75,7 @@ export function useCreateCoinForm() {
       body.append("creatorAddress", account?.address as string);
       const coin = await createCoin(body);
       router.push(`/c/${coin.address}`);
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
     } finally {
       setLoading(false);

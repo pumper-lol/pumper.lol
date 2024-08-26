@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { FormEvent, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function HeroSearchBar() {
@@ -16,8 +16,9 @@ function HeroSearchBar() {
     [searchParams],
   );
 
-  function search(event) {
-    router.push("/" + "?" + createQueryString("search", event.target.value));
+  function search(event: FormEvent<HTMLInputElement>) {
+    const target = event.target as HTMLInputElement;
+    router.push("/" + "?" + createQueryString("search", target.value));
   }
   return (
     <div className="flex items-center bg-gray-900 p-2 rounded-full shadow-custom-shadow">

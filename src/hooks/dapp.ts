@@ -27,7 +27,7 @@ export function usePumperFactory() {
       address: PumperFactory.testnetAddress as Address,
       functionName: functionName,
       args: args,
-    });
+    }) as Promise<any>;
   }
 
   function pumperFactoryWrite(
@@ -42,7 +42,10 @@ export function usePumperFactory() {
     });
   }
 
-  async function deployCoin(name: string, symbol: string) {
+  async function deployCoin(
+    name: string,
+    symbol: string,
+  ): Promise<Address | undefined> {
     if (account.chainId !== testnet.id) {
       switchChain({ chainId: testnet.id });
     }
@@ -169,7 +172,7 @@ export function usePumperToken(coinAddress: Address) {
       address: coinAddress,
       functionName: "getTokenOutputX",
       args: [parseEther(eduAmount)],
-    })) as BigInt;
+    })) as bigint;
   }
 
   async function fromTokenCalculatePrice(tokenAmount: string) {
@@ -179,7 +182,7 @@ export function usePumperToken(coinAddress: Address) {
       address: coinAddress,
       functionName: "getTokenOutputX",
       args: [parseEther(tokenAmount)],
-    })) as BigInt;
+    })) as bigint;
   }
 
   return {

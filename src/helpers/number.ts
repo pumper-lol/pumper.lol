@@ -24,5 +24,5 @@ export function formatNumber(num: number) {
 }
 
 export function coinRate(amount: number, price: number) {
-  return (formatEther(BigInt(amount)) / formatEther(BigInt(price))).toFixed(3);
+  return formatEther(BigInt(amount / price));
 }

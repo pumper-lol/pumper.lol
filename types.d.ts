@@ -44,6 +44,9 @@ interface Coin {
   marketCap: number;
   replies_count: number;
   imageUrl: string;
+  creatorId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 type Reply = {
@@ -100,4 +103,5 @@ interface Trade {
   transactionHash_: string;
   seller?: string;
   buyer?: string;
+  __typename: string;
 }

@@ -40,7 +40,7 @@ async function Home() {
       <section className="container mx-auto px-4 py-12">
         <CoinList
           coins={coins}
-          baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL}
+          baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL as string}
           getCoins={getCoins}
         />
       </section>

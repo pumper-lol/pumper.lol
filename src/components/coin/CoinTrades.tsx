@@ -18,7 +18,9 @@ export function CoinTrades({ coin }: { coin: Coin }) {
     setHistory(
       Object.values(data ?? [])
         ?.flat()
-        .sort((a, b) => b.timestamp_ - a.timestamp_),
+        .sort((a, b) => {
+          return parseInt(b.timestamp_) - parseInt(a.timestamp_);
+        }),
     );
   }, [data, history]);
 

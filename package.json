@@ -23,6 +23,7 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
+    "sharp": "^0.33.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "viem": "^2.19.1",

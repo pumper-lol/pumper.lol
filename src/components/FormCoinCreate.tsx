@@ -1,5 +1,5 @@
 "use client";
-import { useCreateCoinForm } from "@/hooks/CreateCoinForm";
+import { useCreateCoinForm } from "@/hooks/createCoinForm";
 
 export function FormCoinCreate() {
   const { setField, handleSubmit, setImage, validationErrors, loading } =

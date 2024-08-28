@@ -22,7 +22,7 @@ export function CoinTrades({ coin }: { coin: Coin }) {
           return parseInt(b.timestamp_) - parseInt(a.timestamp_);
         }),
     );
-  }, [data, history]);
+  }, [data, setHistory]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -42,7 +42,13 @@ export function CoinTrades({ coin }: { coin: Coin }) {
         <tbody>
           {history?.map((trade, index) => (
             <tr key={index} className="divide-y divide-green-500 text-gray-300">
-              <td className="py-2">{formatHash(trade.transactionHash_)}</td>
+              <td className="py-2">
+                <a
+                  href={`https://opencampus-codex.blockscout.com/tx/${trade.transactionHash_}`}
+                >
+                  {formatHash(trade.transactionHash_)}
+                </a>
+              </td>
               <td className="py-2">{trade.__typename}</td>
               <td className="py-2">{formatEther(BigInt(trade.amount))}</td>
               <td className="py-2">{formatEther(BigInt(trade.price))}</td>

@@ -12,6 +12,7 @@ export async function CoinHolder({ address }: { address: string }) {
       },
     },
   );
+  if (!(response?.status === 200)) return <></>;
   let circulating = 0;
   const holders = response?.data?.items
     ?.map((item: CoinData) => {
@@ -37,7 +38,11 @@ export async function CoinHolder({ address }: { address: string }) {
       </div>
       {holders.map((item, index) => (
         <div key={index} className="flex justify-between py-2 text-gray-300">
-          <span className="">{item.address}</span>
+          <a
+            href={`https://opencampus-codex.blockscout.com/address/${item.address}`}
+          >
+            {formatAddress(item.address)}
+          </a>
           <span className="">{item.percentage}%</span>
         </div>
       ))}

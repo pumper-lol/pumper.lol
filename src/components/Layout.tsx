@@ -38,7 +38,10 @@ export default function Layout({ children }: LayoutProps) {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline font-medium">
+                <a
+                  href="https://t.me/pumper_lol"
+                  className="hover:underline font-medium"
+                >
                   Community
                 </a>
               </li>

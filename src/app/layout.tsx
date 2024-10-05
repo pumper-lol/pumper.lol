@@ -6,6 +6,8 @@ import Layout from "@/components/Layout";
 import { AppRainbowKitProvider } from "@/providers/wagmi";
 import { headers } from "next/headers";
 import { AppApolloProvider } from "@/providers/AppApolloProvider";
+import GoogleTagManager from "@/components/analytics/GoogleTagManager";
+import Head from "next/head";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -31,6 +33,9 @@ export default function RootLayout({
   const cookie = headers().get("cookie");
   return (
     <html lang="en">
+      <Head>
+        <GoogleTagManager />
+      </Head>
       <body className={`${dmSans.className} ${dokdo.variable} bg-[#000c05]`}>
         <AppApolloProvider>
           <AppRainbowKitProvider cookie={cookie}>

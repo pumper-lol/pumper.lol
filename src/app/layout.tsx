@@ -33,9 +33,7 @@ export default function RootLayout({
   const cookie = headers().get("cookie");
   return (
     <html lang="en">
-      <Head>
-        <GoogleTagManager />
-      </Head>
+      <GoogleTagManager />
       <body className={`${dmSans.className} ${dokdo.variable} bg-[#000c05]`}>
         <AppApolloProvider>
           <AppRainbowKitProvider cookie={cookie}>

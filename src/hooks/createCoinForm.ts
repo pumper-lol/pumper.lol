@@ -1,12 +1,12 @@
 "use client";
 
-import { ChangeEventHandler, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import * as yup from "yup";
 import { createCoin } from "@/actions/coin";
 import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
 
-import { usePumperFactory } from "@/hooks/dapp";
+import { useLaunchpadDeployer } from "@/hooks/dapp";
 
 export type Input = {
   name: string;
@@ -20,7 +20,7 @@ export type Input = {
 };
 
 export function useCreateCoinForm() {
-  const { deployCoin } = usePumperFactory();
+  const { deployCoin } = useLaunchpadDeployer();
   const account = useAccount();
   const router = useRouter();
 

@@ -1,21 +1,10 @@
-import {
-  useAccount,
-  useConfig,
-  useReadContract,
-  useSwitchChain,
-  useWriteContract,
-} from "wagmi";
-import {
-  readContract,
-  waitForTransaction,
-  waitForTransactionReceipt,
-} from "@wagmi/core";
-import PumperFactory from "@/artifacts/PumperFactory.json";
+import { useAccount, useConfig, useSwitchChain, useWriteContract } from "wagmi";
+import { readContract, waitForTransactionReceipt } from "@wagmi/core";
+import LaunchpadContract from "@/artifacts/LaunchpadContract.json";
 import { Address, Hash, parseEther } from "viem";
-import PumperToken from "@/artifacts/PumperToken.json";
 import { testnet } from "@/helpers/wagmi";
 
-export function usePumperFactory() {
+export function useLaunchpadDeployer() {
   const account = useAccount();
   const config = useConfig();
   const { switchChain } = useSwitchChain();
@@ -23,8 +12,8 @@ export function usePumperFactory() {
 
   function pumperFactoryRead(functionName: string, ...args: any[]) {
     return readContract(config, {
-      abi: PumperFactory.abi,
-      address: PumperFactory.testnetAddress as Address,
+      abi: LaunchpadContract.abi,
+      address: LaunchpadContract.testnetAddress as Address,
       functionName: functionName,
       args: args,
     }) as Promise<any>;
@@ -35,8 +24,8 @@ export function usePumperFactory() {
     ...args: any[]
   ): Promise<Hash> {
     return writeContractAsync({
-      abi: PumperFactory.abi,
-      address: PumperFactory.testnetAddress as Address,
+      abi: LaunchpadContract.abi,
+      address: LaunchpadContract.testnetAddress as Address,
       functionName: functionName,
       args: args,
     });
@@ -52,19 +41,21 @@ export function usePumperFactory() {
 
     try {
       if (!account.address) return;
-      const salt = await pumperFactoryRead(
-        "getDeployedPumpTokensLen",
-        account.address,
-      );
-      const byteCode = await pumperFactoryRead("getBytecode", name, symbol);
       const contractAddress = await pumperFactoryRead(
-        "getAddressBeforeDeployment",
-        byteCode,
-        salt,
+        "guessNewTokenAddress",
+        LaunchpadContract.testnetAddress as Address,
+        await pumperFactoryRead("tokenCount"),
       );
 
-      const hash = await pumperFactoryWrite("createPumpToken", name, symbol);
+      const hash = await writeContractAsync({
+        abi: LaunchpadContract.abi,
+        address: LaunchpadContract.testnetAddress as Address,
+        functionName: "createAndInitPurchase",
+        args: [name, symbol],
+        value: parseEther(".000001"),
+      });
       await waitForTransactionReceipt(config, { hash: hash });
+
       return contractAddress;
     } catch (e) {
       console.log(e);
@@ -77,119 +68,97 @@ export function usePumperFactory() {
   };
 }
 
-export function usePumperToken(coinAddress: Address) {
+export function useLaunchpadToken(tokenAddress: Address) {
   const account = useAccount();
   const config = useConfig();
   const { switchChain } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
-  const { data: k } = useReadContract({
-    abi: PumperToken.abi,
-    address: coinAddress,
-    functionName: "k",
-  });
-  const { data: y } = useReadContract({
-    abi: PumperToken.abi,
-    address: coinAddress,
-    functionName: "y",
-  });
-  const { data: x } = useReadContract({
-    abi: PumperToken.abi,
-    address: coinAddress,
-    functionName: "x",
-  });
-  const { data: circulatingSupply } = useReadContract({
-    abi: PumperToken.abi,
-    address: coinAddress,
-    functionName: "circulatingSupply",
-  });
+  function pumperLaunchpadRead(functionName: string, ...args: any[]) {
+    return readContract(config, {
+      abi: LaunchpadContract.abi,
+      address: LaunchpadContract.testnetAddress as Address,
+      functionName: functionName,
+      args: args,
+    }) as Promise<any>;
+  }
 
-  function pumperTokenWrite(
+  function pumperFactoryWrite(
     functionName: string,
-    address: Address,
     ...args: any[]
   ): Promise<Hash> {
     return writeContractAsync({
-      abi: PumperToken.abi,
-      address: address as Address,
+      abi: LaunchpadContract.abi,
+      address: LaunchpadContract.testnetAddress as Address,
       functionName: functionName,
       args: args,
     });
   }
 
-  async function buyCoin(amount: string) {
+  async function fromTokenAmountGetEduPrice(tokenAmount: string) {
+    if (!tokenAmount || parseInt(tokenAmount) <= 0) return BigInt(0);
+    return (await pumperLaunchpadRead(
+      "getTrxAmountBySale",
+      tokenAddress,
+      parseEther(tokenAmount),
+    )) as bigint;
+  }
+
+  async function fromEduAmountGetTokenPrice(eduAmount: string) {
+    if (!eduAmount || parseInt(eduAmount) <= 0) return BigInt(0);
+    return (await pumperLaunchpadRead(
+      "getTokenAmountByPurchase",
+      tokenAddress,
+      parseEther(eduAmount),
+    )) as bigint;
+  }
+
+  async function buyToken(eduAmount: string) {
+    if (!eduAmount || parseInt(eduAmount) <= 0)
+      throw new Error("Invalid amount");
     if (account.chainId !== testnet.id) {
       switchChain({ chainId: testnet.id });
     }
 
     try {
       if (!account.address) return;
-      const hash = (await writeContractAsync({
-        abi: PumperToken.abi,
-        address: coinAddress as Address,
-        functionName: "buyX",
-        value: parseEther(amount),
-      })) as Hash;
+      const hash = (await pumperFactoryWrite(
+        "purchaseToken",
+        tokenAddress,
+        parseEther(eduAmount),
+      )) as Hash;
       await waitForTransactionReceipt(config, { hash: hash });
     } catch (e) {
       console.log(e);
-      throw new Error("Failed to buy coin");
+      throw new Error("Failed to buy token");
     }
   }
 
-  async function sellCoin(amount: string) {
+  async function sellToken(tokenAmount: string) {
+    if (!tokenAmount || parseInt(tokenAmount) <= 0)
+      throw new Error("Invalid amount");
     if (account.chainId !== testnet.id) {
       switchChain({ chainId: testnet.id });
     }
 
     try {
       if (!account.address) return;
-      const approvalHash = await pumperTokenWrite(
-        "approve",
-        coinAddress,
-        coinAddress,
-        parseEther(amount),
-      );
-      await waitForTransaction(config, { hash: approvalHash });
-
-      const hash = await pumperTokenWrite(
-        "sellX",
-        coinAddress,
-        parseEther(amount),
-      );
-      await waitForTransactionReceipt(config, { hash });
-      return;
+      const hash = (await pumperFactoryWrite(
+        "saleToken",
+        tokenAddress,
+        parseEther(tokenAmount),
+      )) as Hash;
+      await waitForTransactionReceipt(config, { hash: hash });
     } catch (e) {
       console.log(e);
-      throw new Error("Failed to sell coin");
+      throw new Error("Failed to sell token");
     }
   }
 
-  async function fromEduCalculatePrice(eduAmount: string) {
-    if (!eduAmount || parseInt(eduAmount) <= 0) return BigInt(0);
-    return (await readContract(config, {
-      abi: PumperToken.abi,
-      address: coinAddress,
-      functionName: "getTokenOutputX",
-      args: [parseEther(eduAmount)],
-    })) as bigint;
-  }
-
-  async function fromTokenCalculatePrice(tokenAmount: string) {
-    if (!tokenAmount || parseInt(tokenAmount) <= 0) return BigInt(0);
-    return (await readContract(config, {
-      abi: PumperToken.abi,
-      address: coinAddress,
-      functionName: "getTokenOutputX",
-      args: [parseEther(tokenAmount)],
-    })) as bigint;
-  }
-
   return {
-    circulatingSupply,
-    fromEduCalculatePrice,
-    fromTokenCalculatePrice,
-    buyCoin,
-    sellCoin,
+    fromEduAmountGetTokenPrice,
+    fromTokenAmountGetEduPrice,
+    buyToken,
+    sellToken,
   };
 }

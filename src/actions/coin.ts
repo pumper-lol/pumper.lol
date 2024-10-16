@@ -7,19 +7,27 @@ import { Prisma, PrismaPromise } from "@prisma/client";
 import QueryMode = Prisma.QueryMode;
 
 export async function createCoin(form: FormData) {
-  const data = (await pinata.upload.file(form.get("image") as File)) as {
-    IpfsHash: string;
-  };
+  let IpfsHash = "";
+  try {
+    const data = (await pinata.upload.file(form.get("image") as File)) as {
+      IpfsHash: string;
+    };
+    IpfsHash = data.IpfsHash;
+  } catch (error) {
+    console.error("Error uploading image", error);
+    throw new Error("Error uploading image");
+  }
   const creator = (await findOrCreateCreator(
     form.get("creatorAddress") as string,
   )) as { id: string };
 
+  console.log("creator", creator, form.get("creatorAddress"));
   return prisma.coin.create({
     data: {
       name: form.get("name") as string,
       symbol: form.get("symbol") as string,
       description: form.get("description") as string,
-      imageIpfsHash: data.IpfsHash,
+      imageIpfsHash: IpfsHash,
       twitterUrl: form.get("twitterUrl") as string,
       telegramUrl: form.get("telegramUrl") as string,
       websiteUrl: form.get("websiteUrl") as string,

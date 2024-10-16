@@ -1,7 +1,7 @@
 "use client";
 import { CoinIcon } from "@/components/CoinIcon";
 import { FormEvent, useEffect, useState } from "react";
-import { usePumperToken } from "@/hooks/dapp";
+import { useLaunchpadToken } from "@/hooks/dapp";
 import { Address, formatEther } from "viem";
 import Image from "next/image";
 
@@ -13,15 +13,18 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
     type: "BUY",
     amount: "0",
   });
-  const { buyCoin, sellCoin, fromTokenCalculatePrice, fromEduCalculatePrice } =
-    usePumperToken(coin.address as Address);
+  const {
+    buyToken,
+    sellToken,
+    fromTokenAmountGetEduPrice,
+    fromEduAmountGetTokenPrice,
+  } = useLaunchpadToken(coin.address as Address);
   const [amount, setAmount] = useState<bigint>();
-
   useEffect(() => {
     if (form.type === "BUY")
-      fromTokenCalculatePrice(form.amount).then(setAmount);
-    else fromEduCalculatePrice(form.amount).then(setAmount);
-  }, [form, fromTokenCalculatePrice, fromEduCalculatePrice]);
+      fromTokenAmountGetEduPrice(form.amount).then(setAmount);
+    else fromEduAmountGetTokenPrice(form.amount).then(setAmount);
+  }, [form, fromTokenAmountGetEduPrice, fromEduAmountGetTokenPrice]);
 
   async function submit(e: any) {
     e.preventDefault();
@@ -30,9 +33,9 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
     setLoading(true);
     try {
       if (form.type === "BUY") {
-        await buyCoin(form.amount);
+        await buyToken(form.amount);
       } else {
-        await sellCoin(form.amount);
+        await sellToken(form.amount);
       }
       form.amount = "0";
     } catch (e) {

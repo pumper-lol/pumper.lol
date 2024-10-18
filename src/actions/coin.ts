@@ -5,8 +5,24 @@ import prisma from "@/helpers/prisma";
 import { findOrCreateCreator } from "@/actions/creator";
 import { Prisma, PrismaPromise } from "@prisma/client";
 import QueryMode = Prisma.QueryMode;
+import { headers } from "next/headers";
+
+export async function ensureRequestOrigin() {
+  if (typeof window !== "undefined") {
+    throw new Error("This function must be used on the server-side");
+  }
+
+  const allowedOrigins = ["https://www.pumper.lol", "http://localhost:3000"];
+  const requestOrigin = headers().get("origin") as string;
+
+  if (!allowedOrigins.includes(requestOrigin)) {
+    throw new Error("Invalid request origin");
+  }
+}
 
 export async function createCoin(form: FormData) {
+  await ensureRequestOrigin();
+
   let IpfsHash = "";
   try {
     const data = (await pinata.upload.file(form.get("image") as File)) as {
@@ -14,14 +30,12 @@ export async function createCoin(form: FormData) {
     };
     IpfsHash = data.IpfsHash;
   } catch (error) {
-    console.error("Error uploading image", error);
     throw new Error("Error uploading image");
   }
   const creator = (await findOrCreateCreator(
     form.get("creatorAddress") as string,
   )) as { id: string };
 
-  console.log("creator", creator, form.get("creatorAddress"));
   return prisma.coin.create({
     data: {
       name: form.get("name") as string,

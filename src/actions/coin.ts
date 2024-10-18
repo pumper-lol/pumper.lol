@@ -4,8 +4,9 @@ import { pinata } from "@/helpers/pinata";
 import prisma from "@/helpers/prisma";
 import { findOrCreateCreator } from "@/actions/creator";
 import { Prisma, PrismaPromise } from "@prisma/client";
-import QueryMode = Prisma.QueryMode;
 import { headers } from "next/headers";
+import QueryMode = Prisma.QueryMode;
+import SortOrder = Prisma.SortOrder;
 
 export async function ensureRequestOrigin() {
   if (typeof window !== "undefined") {
@@ -114,6 +115,9 @@ export async function getCoins({
       creator: true,
     },
     skip: page && page > 0 ? (page - 1) * 20 : 0,
-    take: 20,
+    take: 60,
+    orderBy: {
+      createdAt: SortOrder.desc,
+    },
   }) as unknown as PrismaPromise<Coin[]>;
 }

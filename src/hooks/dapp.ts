@@ -1,7 +1,14 @@
 import { useAccount, useConfig, useSwitchChain, useWriteContract } from "wagmi";
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import LaunchpadContract from "@/artifacts/LaunchpadContract.json";
-import { Address, Hash, parseEther } from "viem";
+import {
+  Address,
+  encodePacked,
+  getAddress,
+  Hash,
+  keccak256,
+  parseEther,
+} from "viem";
 import { testnet } from "@/helpers/wagmi";
 
 export function useLaunchpadDeployer() {
@@ -41,18 +48,16 @@ export function useLaunchpadDeployer() {
 
     try {
       if (!account.address) return;
-      const contractAddress = await pumperFactoryRead(
-        "guessNewTokenAddress",
-        LaunchpadContract.testnetAddress as Address,
-        await pumperFactoryRead("tokenCount"),
-      );
+
+      const contractAddress = await pumperFactoryRead("guessNewTokenAddress");
+      const launchFee = await pumperFactoryRead("launchFee");
 
       const hash = await writeContractAsync({
         abi: LaunchpadContract.abi,
         address: LaunchpadContract.testnetAddress as Address,
         functionName: "createAndInitPurchase",
         args: [name, symbol],
-        value: parseEther(".000001"),
+        value: launchFee,
       });
       await waitForTransactionReceipt(config, { hash: hash });
 
@@ -96,7 +101,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
   }
 
   async function fromTokenAmountGetEduPrice(tokenAmount: string) {
-    if (!tokenAmount || parseInt(tokenAmount) <= 0) return BigInt(0);
+    if (!tokenAmount || parseFloat(tokenAmount) <= 0) return BigInt(0);
     return (await pumperLaunchpadRead(
       "getTrxAmountBySale",
       tokenAddress,
@@ -105,7 +110,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
   }
 
   async function fromEduAmountGetTokenPrice(eduAmount: string) {
-    if (!eduAmount || parseInt(eduAmount) <= 0) return BigInt(0);
+    if (!eduAmount || parseFloat(eduAmount) <= 0) return BigInt(0);
     return (await pumperLaunchpadRead(
       "getTokenAmountByPurchase",
       tokenAddress,
@@ -114,7 +119,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
   }
 
   async function buyToken(eduAmount: string) {
-    if (!eduAmount || parseInt(eduAmount) <= 0)
+    if (!eduAmount || parseFloat(eduAmount) <= 0)
       throw new Error("Invalid amount");
     if (account.chainId !== testnet.id) {
       switchChain({ chainId: testnet.id });
@@ -122,11 +127,13 @@ export function useLaunchpadToken(tokenAddress: Address) {
 
     try {
       if (!account.address) return;
-      const hash = (await pumperFactoryWrite(
-        "purchaseToken",
-        tokenAddress,
-        parseEther(eduAmount),
-      )) as Hash;
+      const hash = (await writeContractAsync({
+        abi: LaunchpadContract.abi,
+        address: LaunchpadContract.testnetAddress as Address,
+        functionName: "purchaseToken",
+        args: [tokenAddress, parseEther(eduAmount)],
+        value: parseEther(eduAmount),
+      })) as Hash;
       await waitForTransactionReceipt(config, { hash: hash });
     } catch (e) {
       console.log(e);
@@ -135,7 +142,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
   }
 
   async function sellToken(tokenAmount: string) {
-    if (!tokenAmount || parseInt(tokenAmount) <= 0)
+    if (!tokenAmount || parseFloat(tokenAmount) <= 0)
       throw new Error("Invalid amount");
     if (account.chainId !== testnet.id) {
       switchChain({ chainId: testnet.id });
@@ -146,6 +153,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
       const hash = (await pumperFactoryWrite(
         "saleToken",
         tokenAddress,
+        parseEther(tokenAmount),
         parseEther(tokenAmount),
       )) as Hash;
       await waitForTransactionReceipt(config, { hash: hash });

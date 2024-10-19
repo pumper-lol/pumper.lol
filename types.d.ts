@@ -97,11 +97,12 @@ interface Trade {
   block_number: string;
   contractId_: string;
   id: string;
-  price: string;
+  tokenAmount: string;
+  trxAmount: string;
   timestamp_: string;
   token: string;
   transactionHash_: string;
   seller?: string;
   buyer?: string;
-  __typename: string;
+  __typename: "TokenPurchased" | "TokenSold";
 }

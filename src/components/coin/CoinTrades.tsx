@@ -4,6 +4,7 @@ import { GET_TRADES } from "@/helpers/graphqlQueries";
 import { formatAddress, formatHash } from "@/helpers/ethers";
 import { useEffect, useState } from "react";
 import { formatEther } from "viem";
+import { timestampToHumanDiff } from "@/helpers/date";
 
 export function CoinTrades({ coin }: { coin: Coin }) {
   const { loading, error, data } = useQuery<{ sells: Trade[]; buys: Trade[] }>(
@@ -28,31 +29,54 @@ export function CoinTrades({ coin }: { coin: Coin }) {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="rounded-md bg-green-900 bg-opacity-60 divide-y divide-gray-600 px-4 m-4">
-      <table className="w-full">
+    <div className="rounded-md bg-green-900 bg-opacity-60 divide-y divide-gray-600 py-4 m-4 overflow-x-auto">
+      <table className="min-w-full text-sm">
         <thead>
-          <tr className="text-gray-300 text-left">
-            <th className="py-4">Hash</th>
-            <th className="py-4">Type</th>
-            <th className="py-4">Amount</th>
-            <th className="py-4">Price</th>
-            <th className="py-4">From/To</th>
+          <tr className="text-gray-300 font-medium text-left border-b-2 border-green-500">
+            <th className="py-2 px-4">Tx Hash</th>
+            <th className="py-2 px-4">Type</th>
+            <th className="py-2 px-4">Amount</th>
+            <th className="py-2 px-4">Price</th>
+            <th className="py-2 px-4">Account</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-green-500 text-gray-300">
           {history?.map((trade, index) => (
-            <tr key={index} className="divide-y divide-green-500 text-gray-300">
-              <td className="py-2">
-                <a
-                  href={`https://opencampus-codex.blockscout.com/tx/${trade.transactionHash_}`}
-                >
-                  {formatHash(trade.transactionHash_)}
-                </a>
+            <tr key={index} className="">
+              <td className="py-2 px-4">
+                <span className="inline-block">
+                  <span className="block text-sm">
+                    <a
+                      href={`https://opencampus-codex.blockscout.com/tx/${trade.transactionHash_}`}
+                    >
+                      {formatHash(trade.transactionHash_)}
+                    </a>
+                  </span>
+                  <span className="block text-sm text-green-600">
+                    {timestampToHumanDiff(
+                      (parseInt(trade.timestamp_) * 1000) as string,
+                    )}
+                  </span>
+                </span>
               </td>
-              <td className="py-2">{trade.__typename}</td>
-              <td className="py-2">{formatEther(BigInt(trade.amount))}</td>
-              <td className="py-2">{formatEther(BigInt(trade.price))}</td>
-              <td className="py-2">
+              <td className="py-2 px-4">
+                {trade.__typename === "TokenPurchased" ? "BUY" : "SELL"}
+              </td>
+              <td className="py-2 px-4">
+                <span className="inline-block">
+                  <span className="block text-sm">
+                    {formatEther(BigInt(trade.tokenAmount))}
+                  </span>
+                  <span className="block text-sm">
+                    {formatEther(BigInt(trade.trxAmount))} EDU
+                  </span>
+                </span>
+              </td>
+              <td className="py-2 px-4">
+                {formatEther(BigInt(trade.trxAmount)) /
+                  formatEther(BigInt(trade.tokenAmount))}
+              </td>
+              <td className="py-2 px-4">
                 {formatAddress(trade.buyer ?? (trade.seller as string))}
               </td>
             </tr>

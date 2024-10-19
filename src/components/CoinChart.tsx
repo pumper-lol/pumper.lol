@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "@apollo/client";
 import { useMemo } from "react";
-import { formatEther } from "viem";
 import Chart from "react-apexcharts";
 import { GET_TRADES } from "@/helpers/graphqlQueries";
 
@@ -13,34 +12,35 @@ export function CoinChart({ coin }: { coin: Coin }) {
     },
   );
 
-  const history = useMemo(() => {
-    const _data = new Map<number, { x: Date; y: string[] }>();
+  const weiToEther = (wei) => parseFloat(wei) / 1e18;
 
+  const history = useMemo(() => {
     if (!data) return [];
 
-    Object?.values(data)
+    const reduce = Object?.values(data)
       ?.flat()
-      .forEach((trade: Trade) => {
-        const amount = parseInt(
-          formatEther(BigInt(trade.amount) / BigInt(trade.price)),
-        )?.toFixed(3) as string;
-
-        const roundedTimestamp =
-          Math.floor(parseInt(trade.timestamp_) / 3600) * 3600; // 300 seconds = 5 minutes
-
-        const files = _data.get(roundedTimestamp);
-        if (!files) {
-          _data.set(roundedTimestamp, {
-            x: new Date(roundedTimestamp * 1000),
-            y: [amount],
-          });
-          return;
+      .sort((a, b) => a.timestamp_ - b.timestamp_)
+      .map((transaction) => ({
+        timestamp: parseInt(transaction.timestamp_) * 1000, // Convert to milliseconds
+        price:
+          weiToEther(transaction.trxAmount) /
+          weiToEther(transaction.tokenAmount),
+      }))
+      .reduce((acc, { timestamp, price }) => {
+        if (acc.length === 0 || timestamp !== acc[acc.length - 1][0]) {
+          // New candle
+          acc.push([timestamp, [price, price, price, price]]); // [timestamp, [Open, High, Low, Close]]
+        } else {
+          // Update existing candle
+          const candle = acc[acc.length - 1][1];
+          candle[1] = Math.max(candle[1], price); // High
+          candle[2] = Math.min(candle[2], price); // Low
+          candle[3] = price; // Close
         }
-        files?.y.push(amount);
-        _data.set(roundedTimestamp, files);
-      });
-
-    return Array.from(_data.values());
+        return acc;
+      }, []);
+    console.log(reduce);
+    return reduce;
   }, [data]);
 
   if (loading) return <p>Loading...</p>;
@@ -57,6 +57,14 @@ export function CoinChart({ coin }: { coin: Coin }) {
           yaxis: {
             tooltip: {
               enabled: true,
+            },
+          },
+          plotOptions: {
+            candlestick: {
+              colors: {
+                upward: "#3C90EB",
+                downward: "#DF7D46",
+              },
             },
           },
         }}

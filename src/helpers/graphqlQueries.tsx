@@ -2,27 +2,30 @@ import { gql } from "@apollo/client";
 
 export const GET_TRADES = gql`
   query Trades($token: String!) {
-    sells(where: { token: $token }) {
-      amount
+    tokenSolds(where: { token: $token }) {
       block_number
       contractId_
+      fee
       id
-      price
       seller
-      timestamp_
       token
+      timestamp_
+      tokenAmount
       transactionHash_
+      trxAmount
     }
-    buys(where: { token: $token }) {
-      amount
+    tokenPurchaseds(where: { token: $token }) {
       block_number
       buyer
-      id
       contractId_
-      price
+      fee
+      id
       timestamp_
       token
+      tokenAmount
+      tokenReserve
       transactionHash_
+      trxAmount
     }
   }
 `;

@@ -8,22 +8,24 @@ import Image from "next/image";
 type CoinTradeParams = { coin: Coin; baseUrl: string };
 
 export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    type: "BUY",
-    amount: "0",
-  });
   const {
     buyToken,
     sellToken,
     fromTokenAmountGetEduPrice,
     fromEduAmountGetTokenPrice,
   } = useLaunchpadToken(coin.address as Address);
+
+  const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState<bigint>();
+  const [form, setForm] = useState({
+    type: "BUY",
+    amount: "0",
+  });
+
   useEffect(() => {
     if (form.type === "BUY")
-      fromTokenAmountGetEduPrice(form.amount).then(setAmount);
-    else fromEduAmountGetTokenPrice(form.amount).then(setAmount);
+      fromEduAmountGetTokenPrice(form.amount).then(setAmount);
+    else fromTokenAmountGetEduPrice(form.amount).then(setAmount);
   }, [form, fromTokenAmountGetEduPrice, fromEduAmountGetTokenPrice]);
 
   async function submit(e: any) {

@@ -12,7 +12,7 @@ export function CoinChart({ coin }: { coin: Coin }) {
     },
   );
 
-  const weiToEther = (wei) => parseFloat(wei) / 1e18;
+  const weiToEther = (wei: string) => parseFloat(wei) / 1e18;
 
   const history = useMemo(() => {
     if (!data) return [];
@@ -39,7 +39,6 @@ export function CoinChart({ coin }: { coin: Coin }) {
         }
         return acc;
       }, []);
-    console.log(reduce);
     return reduce;
   }, [data]);
 

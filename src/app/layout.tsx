@@ -7,7 +7,6 @@ import { AppRainbowKitProvider } from "@/providers/wagmi";
 import { headers } from "next/headers";
 import { AppApolloProvider } from "@/providers/AppApolloProvider";
 import GoogleTagManager from "@/components/analytics/GoogleTagManager";
-import Head from "next/head";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],

@@ -1,34 +1,9 @@
-import axios from "axios";
 import { formatAddress } from "@/helpers/ethers";
-import { formatEther } from "viem";
+
+import { tokenInCirculationHolders } from "@/actions/token-holders";
 
 export async function CoinHolder({ address }: { address: string }) {
-  const response = await axios.get<{ items: CoinData[] }>(
-    `https://opencampus-codex.blockscout.com/api/v2/tokens/${address}/holders`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
-  if (!(response?.status === 200)) return <></>;
-  let circulating = 0;
-  const holders = response?.data?.items
-    ?.map((item: CoinData) => {
-      circulating += +item.value;
-      return {
-        address: formatAddress(item.address.hash),
-        value: +item.value,
-      };
-    })
-    ?.map((item: { address: string; value: number }) => {
-      return {
-        address: item.address,
-        value: formatEther(BigInt(item.value)),
-        percentage: ((item.value / circulating) * 100).toFixed(2),
-      };
-    });
+  const holders = await tokenInCirculationHolders(address);
 
   return (
     <div className="rounded-md bg-green-900 bg-opacity-60 divide-y divide-gray-600 px-4">
@@ -43,7 +18,9 @@ export async function CoinHolder({ address }: { address: string }) {
           >
             {formatAddress(item.address)}
           </a>
-          <span className="">{item.percentage}%</span>
+          <div className="">
+            <span className="block">{item.percentage}%</span>
+          </div>
         </div>
       ))}
     </div>

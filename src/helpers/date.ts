@@ -1,12 +1,5 @@
 export function timestampToHumanDiff(timestamp: string) {
   const diff = Date.now() - new Date(timestamp).getTime();
-  console.log(
-    "diff",
-    diff,
-    new Date(timestamp).getTime(),
-    "timestamp",
-    timestamp,
-  );
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);

@@ -31,20 +31,24 @@ model Creator {
 }
 
 model Coin {
-  id            String   @id @default(cuid())
-  address       String
-  name          String
-  symbol        String
-  description   String
-  imageIpfsHash String
-  discordUrl    String
-  twitterUrl    String
-  websiteUrl    String
-  telegramUrl   String
-  creator       Creator  @relation(fields: [creatorId], references: [id])
-  creatorId     String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(cuid())
+  address           String
+  name              String
+  symbol            String
+  description       String
+  imageIpfsHash     String
+  discordUrl        String
+  twitterUrl        String
+  websiteUrl        String
+  telegramUrl       String
+  creator           Creator  @relation(fields: [creatorId], references: [id])
+  creatorId         String
+  circulatingSupply Float    @default(0)
+  marketCap         Float    @default(0)
+  price             Float    @default(0)
+  change24h         Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([address])
   @@index([name])

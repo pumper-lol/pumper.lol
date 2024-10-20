@@ -29,3 +29,21 @@ export const GET_TRADES = gql`
     }
   }
 `;
+
+export const TOKEN_DATA_AT_TIME_QUERY = gql`
+  query Token($timestamp: BigInt!, $token: String!) {
+    tokenPurchaseds(
+      first: 1
+      where: { timestamp__lte: $timestamp, token: $token }
+    ) {
+      tokenAmount
+      trxAmount
+      timestamp_
+    }
+    tokenSolds(first: 1, where: { timestamp__lte: $timestamp, token: $token }) {
+      tokenAmount
+      trxAmount
+      timestamp_
+    }
+  }
+`;

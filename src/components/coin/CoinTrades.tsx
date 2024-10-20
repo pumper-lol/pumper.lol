@@ -1,10 +1,11 @@
 "use client";
 import { useQuery } from "@apollo/client";
-import { GET_TRADES } from "@/helpers/graphqlQueries";
 import { formatAddress, formatHash } from "@/helpers/ethers";
 import { useEffect, useState } from "react";
 import { formatEther } from "viem";
 import { timestampToHumanDiff } from "@/helpers/date";
+import { GET_TRADES } from "@/helpers/graphql";
+import { useTokenMetrics } from "@/hooks/dapp";
 
 export function CoinTrades({ coin }: { coin: Coin }) {
   const { loading, error, data } = useQuery<{ sells: Trade[]; buys: Trade[] }>(
@@ -14,6 +15,7 @@ export function CoinTrades({ coin }: { coin: Coin }) {
     },
   );
   const [history, setHistory] = useState<Trade[]>();
+  useTokenMetrics(coin.address as any);
 
   useEffect(() => {
     setHistory(
@@ -54,7 +56,7 @@ export function CoinTrades({ coin }: { coin: Coin }) {
                   </span>
                   <span className="block text-sm text-green-600">
                     {timestampToHumanDiff(
-                      (parseInt(trade.timestamp_) * 1000) as string,
+                      (parseInt(trade.timestamp_) * 1000).toString(),
                     )}
                   </span>
                 </span>
@@ -73,8 +75,9 @@ export function CoinTrades({ coin }: { coin: Coin }) {
                 </span>
               </td>
               <td className="py-2 px-4">
-                {formatEther(BigInt(trade.trxAmount)) /
-                  formatEther(BigInt(trade.tokenAmount))}
+                {formatEther(
+                  BigInt(trade.trxAmount) / BigInt(trade.tokenAmount),
+                )}
               </td>
               <td className="py-2 px-4">
                 {formatAddress(trade.buyer ?? (trade.seller as string))}

@@ -1,4 +1,5 @@
 // In a .d.ts file (e.g., src/global.d.ts), add the following declaration:
+
 interface Window {
   ethereum?: import("ethers").Eip1193Provider & {
     isMetaMask?: boolean;
@@ -106,3 +107,59 @@ interface Trade {
   buyer?: string;
   __typename: "TokenPurchased" | "TokenSold";
 }
+
+type TokenCreate = {
+  id: string;
+  block_number: number;
+  timestamp_: number;
+  transactionHash_: string;
+  contractId_: string;
+  tokenAddress: string;
+  tokenIndex: number;
+  creator: string;
+};
+
+type TokenPurchased = {
+  id: string;
+  block_number: number;
+  timestamp_: number;
+  transactionHash_: string;
+  contractId_: string;
+  token: string;
+  buyer: string;
+  trxAmount: number;
+  fee: number;
+  tokenAmount: number;
+  tokenReserve: number;
+};
+
+type TokenSold = {
+  id: string;
+  block_number: number;
+  timestamp_: number;
+  transactionHash_: string;
+  contractId_: string;
+  token: string;
+  seller: string;
+  trxAmount: number;
+  fee: number;
+  tokenAmount: number;
+};
+
+type TokenEvent = {
+  id: string;
+  action: "created" | "purchased" | "sold";
+  account: string;
+  amount: number;
+  token: string;
+  timestamp: number;
+};
+
+type TokenEventsContextType = {
+  tokenCreates: TokenCreate[];
+  tokenPurchaseds: TokenPurchased[];
+  tokenSolds: TokenSold[];
+  tokenEvents: TokenEvent[];
+  loading: boolean;
+  error?: unknown;
+};

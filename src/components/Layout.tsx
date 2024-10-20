@@ -1,11 +1,10 @@
 "use client";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import MobileNav from "@/components/MobileNav";
 import ModalHowItWorks from "@/components/ModalHowItWorks";
 import Link from "next/link";
 import { ButtonConnectWallet } from "@/components/ButtonConnectWallet";
 import Image from "next/image";
-import TokenEventMarquee from "@/components/TokenEventMarquee";
 
 interface LayoutProps {
   children: ReactNode;
@@ -16,7 +15,6 @@ export default function Layout({ children }: LayoutProps) {
     useHowItWorksModal();
   return (
     <div className="min-h-screen overflow-y-auto text-white">
-      <TokenEventMarquee />
       <header className="container mx-auto p-4 flex justify-between items-center gap-2">
         <div className="flex justify-between items-center relative h-14 w-full">
           <div className="text-2xl font-bold font-dokdo absolute">

@@ -22,7 +22,8 @@ export function CoinChart({ coin }: { coin: Coin }) {
       ?.flat()
       .sort((a, b) => parseInt(a.timestamp_) - parseInt(b.timestamp_))
       .map((transaction) => ({
-        timestamp: parseInt(transaction.timestamp_) * 1000, // Convert to milliseconds
+        timestamp:
+          Math.floor(parseInt(transaction.timestamp_) / 3600000) * 3600000,
         price:
           weiToEther(transaction.trxAmount) /
           weiToEther(transaction.tokenAmount),
@@ -67,6 +68,9 @@ export function CoinChart({ coin }: { coin: Coin }) {
               colors: {
                 upward: "#3C90EB",
                 downward: "#DF7D46",
+              },
+              wick: {
+                useFillColor: true,
               },
             },
           },

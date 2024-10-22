@@ -53,11 +53,11 @@ export function CoinList({
           <CoinCard key={index} coin={coin} baseUrl={baseUrl} />
         ))}
 
-        <div className="flex items-center justify-center">
-          <button className="bg-green-500 text-white px-4 py-2 rounded-md">
-            Load More
-          </button>
-        </div>
+        {/*<div className="flex items-center justify-center">*/}
+        {/*  <button className="bg-green-500 text-white px-4 py-2 rounded-md">*/}
+        {/*    Load More*/}
+        {/*  </button>*/}
+        {/*</div>*/}
       </div>
     </div>
   );

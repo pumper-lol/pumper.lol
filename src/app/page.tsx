@@ -1,5 +1,5 @@
 import HeroSearchBar from "@/components/HeroSearchBar";
-import CoinCardKing from "@/components/CoinCardKing";
+// import CoinCardKing from "@/components/CoinCardKing";
 import Image from "next/image";
 import Sticker from "@/images/sticker.png";
 import { getCoins } from "@/actions/coin";

@@ -75,9 +75,7 @@ export function CoinTrades({ coin }: { coin: Coin }) {
                 </span>
               </td>
               <td className="py-2 px-4">
-                {formatEther(
-                  BigInt(trade.trxAmount) / BigInt(trade.tokenAmount),
-                )}
+                {Number(trade.trxAmount) / Number(trade.tokenAmount)}
               </td>
               <td className="py-2 px-4">
                 {formatAddress(trade.buyer ?? (trade.seller as string))}

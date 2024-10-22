@@ -160,7 +160,7 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
         <div className="md:col-span-2 lg:col-span-4 py-4">
           <CoinChart coin={coin} />
           <CoinTrades coin={coin} />
-          <CoinReplies />
+          {/*<CoinReplies />*/}
         </div>
       </div>
     </div>

@@ -34,7 +34,7 @@ export async function createCoin(form: FormData) {
     throw new Error("Error uploading image");
   }
   const creator = (await findOrCreateCreator(
-    form.get("creatorAddress") as string,
+    (form.get("creatorAddress") as string).toLowerCase(),
   )) as { id: string };
 
   return prisma.coin.create({
@@ -47,7 +47,7 @@ export async function createCoin(form: FormData) {
       telegramUrl: form.get("telegramUrl") as string,
       websiteUrl: form.get("websiteUrl") as string,
       discordUrl: form.get("discordUrl") as string,
-      address: form.get("address") as string,
+      address: (form.get("address") as string).toLowerCase(),
       creator: {
         connect: {
           id: creator.id,

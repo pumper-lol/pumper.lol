@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { formatEther } from "viem";
 import { timestampToHumanDiff } from "@/helpers/date";
 import { GET_TRADES } from "@/helpers/graphql";
-import { useTokenMetrics } from "@/hooks/dapp";
 
 export function CoinTrades({ coin }: { coin: Coin }) {
   const { loading, error, data } = useQuery<{ sells: Trade[]; buys: Trade[] }>(
@@ -15,11 +14,6 @@ export function CoinTrades({ coin }: { coin: Coin }) {
     },
   );
   const [history, setHistory] = useState<Trade[]>();
-  const metrics = useTokenMetrics(coin.address as any);
-
-  useEffect(() => {
-    console.log("metrics", metrics);
-  }, [metrics]);
 
   useEffect(() => {
     setHistory(

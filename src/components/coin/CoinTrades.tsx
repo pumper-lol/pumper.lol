@@ -15,7 +15,11 @@ export function CoinTrades({ coin }: { coin: Coin }) {
     },
   );
   const [history, setHistory] = useState<Trade[]>();
-  useTokenMetrics(coin.address as any);
+  const metrics = useTokenMetrics(coin.address as any);
+
+  useEffect(() => {
+    console.log("metrics", metrics);
+  }, [metrics]);
 
   useEffect(() => {
     setHistory(

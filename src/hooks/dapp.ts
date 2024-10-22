@@ -164,7 +164,7 @@ export function useLaunchpadToken(tokenAddress: Address) {
 }
 
 export function useTokenMetrics(tokenAddress: Address) {
-  const [timestamp24hoursAgo] = useState(Date.now() - 48 * 60 * 60 * 1000);
+  const [timestamp24hoursAgo] = useState(Date.now() - 24 * 60 * 60 * 1000);
   const [marketCap, setMarketCap] = useState(0);
 
   const { data: trades24HoursAgo } = useQuery(TOKEN_DATA_AT_TIME_QUERY, {

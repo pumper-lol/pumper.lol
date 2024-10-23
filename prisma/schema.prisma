@@ -45,6 +45,7 @@ model Coin {
   creatorId         String
   circulatingSupply Float    @default(0)
   marketCap         Float    @default(0)
+  marketCapInUsd    Float    @default(0)
   price             Float    @default(0)
   change24h         Float    @default(0)
   createdAt         DateTime @default(now())

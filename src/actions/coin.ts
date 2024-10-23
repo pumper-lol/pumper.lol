@@ -101,23 +101,28 @@ export async function getCoins({
   page,
   search,
 }: { page?: number; search?: string } = {}) {
-  return prisma.coin.findMany({
-    where: search
-      ? {
-          OR: [
-            { address: { contains: search, mode: QueryMode.insensitive } },
-            { symbol: { contains: search, mode: QueryMode.insensitive } },
-            { name: { contains: search, mode: QueryMode.insensitive } },
-          ],
-        }
-      : {},
-    include: {
-      creator: true,
-    },
-    skip: page && page > 0 ? (page - 1) * 20 : 0,
-    take: 60,
-    orderBy: {
-      createdAt: SortOrder.desc,
-    },
-  }) as unknown as PrismaPromise<Coin[]>;
+  const where = search
+    ? {
+        OR: [
+          { address: { contains: search, mode: QueryMode.insensitive } },
+          { symbol: { contains: search, mode: QueryMode.insensitive } },
+          { name: { contains: search, mode: QueryMode.insensitive } },
+        ],
+      }
+    : {};
+  const [data, length] = await Promise.all([
+    prisma.coin.findMany({
+      where: where,
+      include: {
+        creator: true,
+      },
+      skip: page && page > 0 ? (page - 1) * 60 : 0,
+      take: 60,
+      orderBy: {
+        createdAt: SortOrder.desc,
+      },
+    }) as unknown as PrismaPromise<Coin[]>,
+    prisma.coin.count({ where }),
+  ]);
+  return { data: data as Coin[], length: length as number };
 }

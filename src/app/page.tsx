@@ -8,7 +8,7 @@ import { env } from "process";
 import React from "react";
 
 async function Home() {
-  const coins: Coin[] = await getCoins({});
+  const coins: { data: Coin[]; length: number } = await getCoins({});
 
   return (
     <div>
@@ -46,7 +46,8 @@ async function Home() {
       </section>
       <section className="container mx-auto px-4 py-12">
         <CoinList
-          coins={coins}
+          coins={coins.data}
+          length={coins.length}
           baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL as string}
           getCoins={getCoins}
         />

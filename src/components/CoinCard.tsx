@@ -2,15 +2,18 @@ import { humanShortHandNumber } from "@/helpers/number";
 import { formatAddress } from "@/helpers/ethers";
 import { CoinIcon } from "@/components/CoinIcon";
 import Link from "next/link";
+import { bondingCurveAndTopMeme } from "@/helpers/token";
 
 export default function CoinCard({
   coin,
   baseUrl,
+  price,
 }: {
   coin: Coin;
+  price: number;
   baseUrl: string;
 }) {
-  // const isLive = Math.random() >= 0.5;
+  const { bondingCurve } = bondingCurveAndTopMeme(coin, price);
   const isLive = false;
   return (
     <div className="bg-[#001708] p-4 rounded">
@@ -60,10 +63,13 @@ export default function CoinCard({
       <div className="mt-2 mb-1">
         <div className="flex justify-between mb-1 text-sm">
           <div className="text-gray-300">Bonding curve progress</div>
-          <div className="text-yellow-500">0%</div>
+          <div className="text-yellow-500">{bondingCurve}%</div>
         </div>
         <div className="bg-gray-500 rounded-md h-1 w-full overflow-hidden">
-          <div className="bg-yellow-500 h-full w-[1%]"></div>
+          <div
+            className="bg-yellow-500 h-full"
+            style={{ width: `${bondingCurve}%` }}
+          ></div>
         </div>
       </div>
       <p className="text-gray-300 text-sm">{coin.description}</p>

@@ -6,9 +6,11 @@ import { getCoins } from "@/actions/coin";
 import { CoinList } from "@/components/CoinList";
 import { env } from "process";
 import React from "react";
+import { eduUsdPrice } from "@/actions/edu";
 
 async function Home() {
   const coins: { data: Coin[]; length: number } = await getCoins({});
+  const _price = await eduUsdPrice();
 
   return (
     <div>
@@ -50,6 +52,7 @@ async function Home() {
           length={coins.length}
           baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL as string}
           getCoins={getCoins}
+          price={_price}
         />
       </section>
     </div>

@@ -10,6 +10,7 @@ import { CoinHolder } from "@/components/coin/CoinHolder";
 import { CoinTrades } from "@/components/coin/CoinTrades";
 import { formatNumber } from "@/helpers/number";
 import { eduUsdPrice } from "@/actions/edu";
+import { bondingCurveAndTopMeme } from "@/helpers/token";
 
 interface PageProps {
   params: {
@@ -30,8 +31,7 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
   const coin = await getCoin(id);
 
   if (!coin) return <div>Not found</div>;
-  const topMeme = (((coin.marketCap * _price) / 28000) * 100).toFixed(3);
-  const bondingCurve = (((coin.marketCap * _price) / 49000) * 100).toFixed(3);
+  const { topMeme, bondingCurve } = bondingCurveAndTopMeme(coin, _price);
 
   return (
     <div className="container mx-auto">

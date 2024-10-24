@@ -2,13 +2,14 @@ import { getCoin, getCoinMetadata } from "@/actions/coin";
 import { ContractActions } from "@/components/ContractActions";
 import { CoinTrade } from "@/components/coin/CoinTrade";
 import { CoinIcon } from "@/components/CoinIcon";
-import { CoinReplies } from "@/components/coin/CoinReplies";
 import { IoLogoChrome, IoLogoDiscord, IoLogoTwitter } from "react-icons/io5";
 import { FaTelegram } from "react-icons/fa6";
 import { env } from "process";
 import { CoinChart } from "@/components/CoinChart";
 import { CoinHolder } from "@/components/coin/CoinHolder";
 import { CoinTrades } from "@/components/coin/CoinTrades";
+import { formatNumber } from "@/helpers/number";
+import { eduUsdPrice } from "@/actions/edu";
 
 interface PageProps {
   params: {
@@ -25,8 +26,12 @@ export async function generateMetadata({ params: { id } }: PageProps) {
 }
 
 export default async function CoinViewPage({ params: { id } }: PageProps) {
+  const _price = await eduUsdPrice();
   const coin = await getCoin(id);
+
   if (!coin) return <div>Not found</div>;
+  const topMeme = (((coin.marketCap * _price) / 28000) * 100).toFixed(3);
+  const bondingCurve = (((coin.marketCap * _price) / 49000) * 100).toFixed(3);
 
   return (
     <div className="container mx-auto">
@@ -99,9 +104,28 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
           </div>
           <p className="text-gray-400 text-sm">{coin.description}</p>
         </div>
+
+        <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-green-950 my-2 text-gray-300 text-sm">
+          <div className="flex justify-between md:flex-col px-2.5 py-1.5">
+            <span className="text-gray-400">Price</span>
+            <span className="text-gray-200">{formatNumber(coin.price)}</span>
+          </div>
+          <div className="flex justify-between md:flex-col px-2.5 py-1.5">
+            <span className="text-gray-400">Liquidity</span>
+            <span className="text-gray-200">
+              $ {formatNumber(coin.liquidity * _price)}
+            </span>
+          </div>
+          <div className="flex justify-between md:flex-col px-2.5 py-1.5">
+            <span className="text-gray-400">Market cap</span>
+            <span className="text-gray-200">
+              $ {formatNumber(coin.marketCap * _price)}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
         <div className="md:col-span-1 flex flex-col gap-4">
           <CoinTrade
             coin={coin}
@@ -112,23 +136,29 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between">
                 <div className="text-gray-200">Top meme</div>
-                <div className="text-yellow-500">0%</div>
+                <div className="text-yellow-500">${topMeme}%</div>
               </div>
               <div className="bg-gray-500 rounded-md h-1 w-full overflow-hidden">
-                <div className="bg-yellow-500 h-full w-[1%]"></div>
+                <div
+                  className="bg-yellow-500 h-full"
+                  style={{ width: `${topMeme}%` }}
+                ></div>
               </div>
               <div className="text-xs text-green-500">
-                dethrone the current king at a $28,716 mcap
+                dethrone the current top at a $28,000 market cap
               </div>
             </div>
 
             <div className="">
               <div className="flex justify-between mb-1">
                 <div className="text-gray-200">Bonding curve progress</div>
-                <div className="text-yellow-500">0%</div>
+                <div className="text-yellow-500">{bondingCurve}%</div>
               </div>
               <div className="bg-gray-500 rounded-md h-1 w-full overflow-hidden">
-                <div className="bg-yellow-500 h-full w-[1%]"></div>
+                <div
+                  className="bg-yellow-500 h-full"
+                  style={{ width: `${bondingCurve}%` }}
+                ></div>
               </div>
             </div>
 
@@ -136,16 +166,13 @@ export default async function CoinViewPage({ params: { id } }: PageProps) {
               <p className="mb-2">
                 when the{" "}
                 <span className="text-green-500">
-                  market cap reaches $39,173
+                  market cap reaches $49,000
                 </span>{" "}
                 all the liquidity from the bonding curve will be deposited into
                 <span className="text-gray-500">SailFish veDex</span> and
                 burned. progression increases as the price goes up.
               </p>
               <p className="">
-                there are{" "}
-                <span className="text-green-500">791,421,697 tokens</span> still
-                available for sale in the bonding curve and there is{" "}
                 <span className="text-green-500">10,000 EDU</span> in the
                 bonding curve.
               </p>

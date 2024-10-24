@@ -20,7 +20,7 @@ export function humanShortHandNumber(num: number) {
 
 export function formatNumber(num: number) {
   if (!num) return "0";
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return new Intl.NumberFormat().format(num);
 }
 
 export function coinRate(amount: number, price: number) {

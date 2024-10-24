@@ -42,7 +42,10 @@ interface Coin {
   telegramUrl?: string;
   websiteUrl?: string;
   creator: Creator;
+  price: number;
+  liquidity: number;
   marketCap: number;
+  marketCapInUsd: number;
   replies_count: number;
   imageUrl: string;
   creatorId: string;
@@ -163,3 +166,30 @@ type TokenEventsContextType = {
   loading: boolean;
   error?: unknown;
 };
+interface CoinMarketCapResponse {
+  status: {
+    timestamp: string;
+    error_code: number;
+    error_message: string | null;
+    elapsed: number;
+    credit_count: number;
+  };
+  data: {
+    [key: string]: {
+      id: number;
+      name: string;
+      symbol: string;
+      slug: string;
+      quote: {
+        USD: {
+          price: number;
+          volume_24h: number;
+          market_cap: number;
+          percent_change_24h: number;
+          percent_change_7d: number;
+          last_updated: string;
+        };
+      };
+    };
+  };
+}

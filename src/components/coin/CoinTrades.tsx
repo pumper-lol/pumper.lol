@@ -2,7 +2,7 @@
 import { useQuery } from "@apollo/client";
 import { formatAddress, formatHash } from "@/helpers/ethers";
 import { useEffect, useState } from "react";
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { timestampToHumanDiff } from "@/helpers/date";
 import { GET_TRADES } from "@/helpers/graphql";
 

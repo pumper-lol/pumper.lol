@@ -44,6 +44,7 @@ model Coin {
   creator           Creator  @relation(fields: [creatorId], references: [id])
   creatorId         String
   circulatingSupply Float    @default(0)
+  liquidity         Float    @default(0)
   marketCap         Float    @default(0)
   marketCapInUsd    Float    @default(0)
   price             Float    @default(0)

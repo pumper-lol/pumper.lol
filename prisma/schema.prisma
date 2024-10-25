@@ -32,11 +32,11 @@ model Creator {
 
 model Coin {
   id                String   @id @default(cuid())
-  address           String
+  address           String   @unique
   name              String
   symbol            String
   description       String
-  imageIpfsHash     String
+  imageUrl          String   @default("https://iemarjay.lon1.cdn.digitaloceanspaces.com/coins/placeholder-image.jpg")
   discordUrl        String
   twitterUrl        String
   websiteUrl        String
@@ -51,10 +51,34 @@ model Coin {
   change24h         Float    @default(0)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  Price             Price[]
 
   @@index([address])
   @@index([name])
   @@index([symbol])
   @@index([creatorId])
   @@map("coins")
+}
+
+model Cache {
+  key       String   @id
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([key])
+  @@index([key])
+  @@map("cache")
+}
+
+model Price {
+  id        String   @id @default(cuid())
+  token     String
+  price     Float
+  createdAt DateTime @default(now())
+
+  Coin   Coin   @relation(fields: [coinId], references: [id])
+  coinId String
+
+  @@map("prices")
 }

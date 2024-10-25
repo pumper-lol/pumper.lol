@@ -2,7 +2,7 @@ import Image from "next/image";
 import { env } from "process";
 
 export function CoinIcon(props: {
-  coin: { symbol: string; imageIpfsHash: string };
+  coin: { symbol: string; imageUrl: string };
   size?: number;
   baseUrl?: string;
 }) {
@@ -13,7 +13,7 @@ export function CoinIcon(props: {
       style={{ height: `${size}px`, width: `${size}px` }}
     >
       <Image
-        src={`${env.NEXT_PUBLIC_PINATA_GATEWAY_URL ?? props.baseUrl}/ipfs/${props.coin.imageIpfsHash}`}
+        src={`${props.coin.imageUrl}`}
         alt={props.coin.symbol}
         className={`rounded-sm object-cover object-center`}
         fill

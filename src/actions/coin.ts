@@ -1,10 +1,10 @@
 "use server";
 
-import { pinata } from "@/helpers/pinata";
 import prisma from "@/helpers/prisma";
 import { findOrCreateCreator } from "@/actions/creator";
 import { Prisma, PrismaPromise } from "@prisma/client";
 import { headers } from "next/headers";
+import { s3 } from "@/helpers/file-storage";
 import QueryMode = Prisma.QueryMode;
 import SortOrder = Prisma.SortOrder;
 
@@ -24,15 +24,19 @@ export async function ensureRequestOrigin() {
 export async function createCoin(form: FormData) {
   await ensureRequestOrigin();
 
-  let IpfsHash = "";
-  try {
-    const data = (await pinata.upload.file(form.get("image") as File)) as {
-      IpfsHash: string;
-    };
-    IpfsHash = data.IpfsHash;
-  } catch (error) {
-    throw new Error("Error uploading image");
+  // upload file to cloudinary
+
+  let imageUrl = "";
+  // try {
+  const image = form.get("image") as File;
+  console.log(image);
+  if (!image) {
+    throw new Error("No image provided");
   }
+  imageUrl = await uploadToSpaces(image);
+  // } catch (error) {
+  //   throw new Error("Error uploading image");
+  // }
   const creator = (await findOrCreateCreator(
     (form.get("creatorAddress") as string).toLowerCase(),
   )) as { id: string };
@@ -42,7 +46,7 @@ export async function createCoin(form: FormData) {
       name: form.get("name") as string,
       symbol: form.get("symbol") as string,
       description: form.get("description") as string,
-      imageIpfsHash: IpfsHash,
+      imageUrl: imageUrl,
       twitterUrl: form.get("twitterUrl") as string,
       telegramUrl: form.get("telegramUrl") as string,
       websiteUrl: form.get("websiteUrl") as string,
@@ -69,7 +73,7 @@ export async function getCoin(id: string) {
 }
 
 type Metadata = {
-  imageIpfsHash?: string | undefined;
+  imageUrl?: string | undefined;
   description?: string | undefined;
   title: string | undefined;
 };
@@ -81,7 +85,7 @@ export async function getCoinMetadata(id: string): Promise<Metadata> {
     },
     select: {
       name: true,
-      imageIpfsHash: true,
+      imageUrl: true,
       description: true,
     },
   })) as Partial<Coin>;
@@ -93,7 +97,7 @@ export async function getCoinMetadata(id: string): Promise<Metadata> {
   return {
     title: coin?.name,
     description: coin?.description,
-    imageIpfsHash: coin?.imageIpfsHash,
+    imageUrl: coin?.imageUrl,
   };
 }
 
@@ -125,4 +129,29 @@ export async function getCoins({
     prisma.coin.count({ where }),
   ]);
   return { data: data as Coin[], length: length as number };
+}
+
+async function uploadToSpaces(file: File): Promise<string> {
+  // Generate a unique filename
+  const extension = file.name.split(".").pop();
+  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${extension}`;
+
+  // Convert File to Buffer
+  // Upload to DigitalOcean Spaces
+  const uploadParams = {
+    Bucket: process.env.SPACES_BUCKET_NAME,
+    Key: `coins/${filename}`,
+    Body: Buffer.from(await file.arrayBuffer()),
+    ACL: "public-read",
+    ContentType: file.type,
+  };
+
+  try {
+    await s3.upload(uploadParams).promise();
+    // Return the public URL of the uploaded file
+    return `${process.env.SPACES_CDN_ENDPOINT}/${uploadParams.Key}`;
+  } catch (error) {
+    console.error("Error uploading to DigitalOcean Spaces:", error);
+    throw new Error("Error uploading image");
+  }
 }

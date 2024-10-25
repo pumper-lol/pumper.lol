@@ -36,7 +36,6 @@ interface Coin {
   name: string;
   symbol: string;
   description: string;
-  imageIpfsHash: string;
   twitterUrl?: string;
   discordUrl?: string;
   telegramUrl?: string;

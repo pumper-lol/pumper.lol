@@ -4,7 +4,9 @@ const nextConfig = {
 		dangerouslyAllowSVG: true,
 		remotePatterns: [
 			{hostname: 'placehold.co'},
-			{hostname: 'orange-basic-bandicoot-201.mypinata.cloud'}
+			{hostname: 'orange-basic-bandicoot-201.mypinata.cloud'},
+			{hostname: 'iemarjay.lon1.digitaloceanspaces.com'},
+			{hostname: 'iemarjay.lon1.cdn.digitaloceanspaces.com'},
 		],
 	},
 	webpack: (config, options) => {

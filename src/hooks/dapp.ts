@@ -41,7 +41,11 @@ export function useLaunchpadDeployer() {
     try {
       if (!account.address) return;
 
-      const contractAddress = await pumperFactoryRead("guessNewTokenAddress");
+      const contractAddress = await pumperFactoryRead(
+        "guessNewTokenAddress",
+        name,
+        symbol,
+      );
       const launchFee = await pumperFactoryRead("launchFee");
 
       const hash = await writeContractAsync({

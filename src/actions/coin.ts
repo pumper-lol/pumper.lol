@@ -4,7 +4,7 @@ import prisma from "@/helpers/prisma";
 import { findOrCreateCreator } from "@/actions/creator";
 import { Prisma, PrismaPromise } from "@prisma/client";
 import { headers } from "next/headers";
-import { s3 } from "@/helpers/file-storage";
+import { pinata, s3 } from "@/helpers/file-storage";
 import QueryMode = Prisma.QueryMode;
 import SortOrder = Prisma.SortOrder;
 
@@ -24,19 +24,17 @@ export async function ensureRequestOrigin() {
 export async function createCoin(form: FormData) {
   await ensureRequestOrigin();
 
-  // upload file to cloudinary
-
-  let imageUrl = "";
-  // try {
-  const image = form.get("image") as File;
-  console.log(image);
-  if (!image) {
-    throw new Error("No image provided");
+  let IpfsHash = "";
+  try {
+    const image = form.get("image") as File;
+    const data = (await pinata.upload.file(image)) as {
+      IpfsHash: string;
+    };
+    IpfsHash = data.IpfsHash;
+  } catch (error) {
+    throw new Error("Error uploading image");
   }
-  imageUrl = await uploadToSpaces(image);
-  // } catch (error) {
-  //   throw new Error("Error uploading image");
-  // }
+
   const creator = (await findOrCreateCreator(
     (form.get("creatorAddress") as string).toLowerCase(),
   )) as { id: string };
@@ -46,7 +44,7 @@ export async function createCoin(form: FormData) {
       name: form.get("name") as string,
       symbol: form.get("symbol") as string,
       description: form.get("description") as string,
-      imageUrl: imageUrl,
+      imageUrl: `${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${IpfsHash}`,
       twitterUrl: form.get("twitterUrl") as string,
       telegramUrl: form.get("telegramUrl") as string,
       websiteUrl: form.get("websiteUrl") as string,

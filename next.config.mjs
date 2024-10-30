@@ -5,6 +5,7 @@ const nextConfig = {
 		remotePatterns: [
 			{hostname: 'placehold.co'},
 			{hostname: 'orange-basic-bandicoot-201.mypinata.cloud'},
+			{hostname: 'turquoise-capable-salamander-729.mypinata.cloud'},
 			{hostname: 'iemarjay.lon1.digitaloceanspaces.com'},
 			{hostname: 'iemarjay.lon1.cdn.digitaloceanspaces.com'},
 		],

@@ -1,5 +1,6 @@
 "use server";
 import axios from "axios";
+import prisma from "@/helpers/prisma";
 
 export async function eduUsdPrice() {
   const key = "EduUsdPrice";

@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { pinata, s3 } from "@/helpers/file-storage";
 import QueryMode = Prisma.QueryMode;
 import SortOrder = Prisma.SortOrder;
+import { PutObjectRequest } from "aws-sdk/clients/s3";
 
 export async function ensureRequestOrigin() {
   if (typeof window !== "undefined") {
@@ -136,8 +137,8 @@ async function uploadToSpaces(file: File): Promise<string> {
 
   // Convert File to Buffer
   // Upload to DigitalOcean Spaces
-  const uploadParams = {
-    Bucket: process.env.SPACES_BUCKET_NAME,
+  const uploadParams: PutObjectRequest = {
+    Bucket: process.env.SPACES_BUCKET_NAME!,
     Key: `coins/${filename}`,
     Body: Buffer.from(await file.arrayBuffer()),
     ACL: "public-read",

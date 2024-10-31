@@ -12,7 +12,7 @@ export async function eduUsdPrice() {
     },
   });
 
-  let price = _cache?.value;
+  let price = parseFloat(_cache?.value ?? "0");
 
   if (!price) {
     try {
@@ -21,11 +21,14 @@ export async function eduUsdPrice() {
           process.env.CMC_PRO_API_KEY,
       );
       price = response.data.data["24613"].quote.USD.price;
-      prisma?.cache.create({
-        data: { key, value: price },
+      prisma?.cache.upsert({
+        where: { key },
+        update: { value: price.toString() },
+        create: { key, value: price.toString() },
       });
     } catch (error) {
-      price = (await prisma?.cache.findFirst({ where: { key } })).value;
+      const _price = (await prisma?.cache.findFirst({ where: { key } }))?.value;
+      price = parseFloat(_price ?? "0");
     }
   }
 

@@ -1,9 +1,16 @@
 "use client";
 import { useCreateCoinForm } from "@/hooks/createCoinForm";
+import ReCaptcha from "@/components/Recaptcha";
 
 export function FormCoinCreate() {
-  const { setField, handleSubmit, setImage, validationErrors, loading } =
-    useCreateCoinForm();
+  const {
+    setField,
+    handleSubmit,
+    setImage,
+    setToken,
+    validationErrors,
+    loading,
+  } = useCreateCoinForm();
 
   return (
     <form onSubmit={handleSubmit}>
@@ -159,6 +166,14 @@ export function FormCoinCreate() {
         ) : (
           ""
         )}
+
+        <ReCaptcha
+          sitekey="6Ld0v2QqAAAAADxqzbB3MCZrZDwRWC5lANXl1ygF"
+          onChange={(token) => {
+            console.log("token", token);
+            if (token) setToken(token);
+          }}
+        />
 
         <div className="">
           <button

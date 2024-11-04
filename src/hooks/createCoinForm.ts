@@ -33,6 +33,7 @@ export function useCreateCoinForm() {
     telegramUrl: "",
     websiteUrl: "",
     discordUrl: "",
+    token: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,10 @@ export function useCreateCoinForm() {
   function setField(e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement;
     setInput((prev) => ({ ...prev, [target.name]: target.value }));
+  }
+
+  function setToken(token: string) {
+    setInput((prev: Input) => ({ ...prev, token }));
   }
 
   function setImage(e: any) {
@@ -89,6 +94,7 @@ export function useCreateCoinForm() {
     setField,
     setImage,
     handleSubmit,
+    setToken,
   };
 }
 

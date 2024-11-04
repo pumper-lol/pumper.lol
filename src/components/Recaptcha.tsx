@@ -8,20 +8,21 @@ interface ReCAPTCHAProps {
 declare global {
   interface Window {
     grecaptcha: any;
-    onReCAPTCHALoad: () => void;
+    onReCAPTCHALoad?: () => void;
   }
 }
 
 const ReCAPTCHA: React.FC<ReCAPTCHAProps> = ({ sitekey, onChange }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const scriptRef = useRef<HTMLScriptElement | Node | undefined | null>(null);
 
   useEffect(() => {
     // Load the reCAPTCHA script
     const script = document.createElement("script");
+    scriptRef.current = script;
     script.src = `https://www.google.com/recaptcha/api.js?render=explicit&onload=onReCAPTCHALoad`;
     script.async = true;
     script.defer = true;
-    document.body.appendChild(script);
 
     // Define the callback function
     window.onReCAPTCHALoad = () => {
@@ -33,10 +34,17 @@ const ReCAPTCHA: React.FC<ReCAPTCHAProps> = ({ sitekey, onChange }) => {
       }
     };
 
+    document.body.appendChild(script);
+
     // Cleanup
     return () => {
-      document.body.removeChild(script);
-      delete window.onReCAPTCHALoad;
+      // Only remove the script if it exists and is still in the document
+      if (scriptRef.current && document.body.contains(scriptRef.current)) {
+        document.body.removeChild(scriptRef.current);
+      }
+      if (window.onReCAPTCHALoad) {
+        window.onReCAPTCHALoad = undefined;
+      }
     };
   }, [sitekey, onChange]);
 

@@ -17,6 +17,7 @@ export type Input = {
   telegramUrl: string;
   websiteUrl: string;
   discordUrl: string;
+  token: string;
 };
 
 export function useCreateCoinForm() {

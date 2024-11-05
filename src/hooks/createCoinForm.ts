@@ -7,6 +7,8 @@ import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
 
 import { useLaunchpadDeployer } from "@/hooks/dapp";
+import { useReCaptcha } from "@/hooks/recaptcha";
+import { verifyReCaptcha } from "@/actions/recaptha";
 
 export type Input = {
   name: string;
@@ -24,6 +26,10 @@ export function useCreateCoinForm() {
   const { deployCoin } = useLaunchpadDeployer();
   const account = useAccount();
   const router = useRouter();
+
+  const { executeReCaptcha } = useReCaptcha({
+    siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string,
+  });
 
   const [input, setInput] = useState<Input>({
     name: "",
@@ -71,6 +77,18 @@ export function useCreateCoinForm() {
     }
 
     try {
+      const token = await executeReCaptcha("create_coin");
+      if (
+        !(await verifyReCaptcha({
+          token,
+          expectedAction: "create_coin",
+          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string,
+        }))
+      ) {
+        setError("ReCaptcha verification failed");
+        return;
+      }
+
       const address = await deployCoin(input.name, input.symbol);
       if (!address) {
         setError("Failed to deploy coin");

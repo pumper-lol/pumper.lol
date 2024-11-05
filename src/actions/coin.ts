@@ -33,6 +33,7 @@ export async function createCoin(form: FormData) {
     };
     IpfsHash = data.IpfsHash;
   } catch (error) {
+    console.error("Error uploading image:", error);
     throw new Error("Error uploading image");
   }
 

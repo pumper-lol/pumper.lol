@@ -6,12 +6,10 @@ import { bondingCurveAndTopMeme } from "@/helpers/token";
 
 export default function CoinCard({
   coin,
-  baseUrl,
   price,
 }: {
   coin: Coin;
   price: number;
-  baseUrl: string;
 }) {
   const { bondingCurve } = bondingCurveAndTopMeme(coin, price);
   const isLive = false;
@@ -20,7 +18,7 @@ export default function CoinCard({
       <div className="flex items-stretch gap-4">
         <Link href={`/c/${coin.address}`}>
           <div className="h-28 w-28 shrink-0 relative">
-            <CoinIcon coin={coin} size={112} baseUrl={baseUrl} />
+            <CoinIcon coin={coin} size={112} />
             {isLive && (
               <span className="text-xs text-lime-400 bg-[#403F3D] rounded-full px-1.5 py-0.5 inline-flex gap-2 items-center absolute left-0.5 -top-1">
                 <span className="bg-lime-400 h-1.5 w-1.5 shadow-[#93EF5AE3] shadow-glow-sm rounded-full"></span>

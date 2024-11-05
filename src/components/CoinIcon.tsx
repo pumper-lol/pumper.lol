@@ -4,7 +4,6 @@ import { env } from "process";
 export function CoinIcon(props: {
   coin: { symbol: string; imageUrl: string };
   size?: number;
-  baseUrl?: string;
 }) {
   const size = props.size || 16;
   return (

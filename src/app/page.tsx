@@ -4,7 +4,6 @@ import Image from "next/image";
 import Sticker from "@/images/sticker.png";
 import { getCoins } from "@/actions/coin";
 import { CoinList } from "@/components/CoinList";
-import { env } from "process";
 import React from "react";
 import { eduUsdPrice } from "@/actions/edu";
 
@@ -50,7 +49,6 @@ async function Home() {
         <CoinList
           coins={coins.data}
           length={coins.length}
-          baseUrl={env.NEXT_PUBLIC_PINATA_GATEWAY_URL as string}
           getCoins={getCoins}
           price={_price}
         />

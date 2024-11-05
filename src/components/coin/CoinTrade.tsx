@@ -5,9 +5,9 @@ import { useLaunchpadToken } from "@/hooks/dapp";
 import { Address, formatEther } from "viem";
 import Image from "next/image";
 
-type CoinTradeParams = { coin: Coin; baseUrl: string };
+type CoinTradeParams = { coin: Coin };
 
-export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
+export function CoinTrade({ coin }: CoinTradeParams) {
   const {
     buyToken,
     sellToken,
@@ -83,7 +83,7 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
           {form.type === "SELL" && (
             <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-800 uppercase py-2">
               {coin.symbol}
-              <CoinIcon coin={coin} size={20} baseUrl={baseUrl} />
+              <CoinIcon coin={coin} size={20} />
             </span>
           )}
           {form.type === "BUY" && (
@@ -103,7 +103,7 @@ export function CoinTrade({ coin, baseUrl }: CoinTradeParams) {
             {form.type === "BUY" && (
               <span className="inline-flex items-center justify-center gap-1 w-fit text-gray-300 uppercase py-2">
                 {coin.symbol}
-                <CoinIcon coin={coin} size={20} baseUrl={baseUrl} />
+                <CoinIcon coin={coin} size={20} />
               </span>
             )}
             {form.type === "SELL" && (

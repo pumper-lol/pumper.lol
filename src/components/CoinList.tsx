@@ -9,10 +9,8 @@ export function CoinList({
   getCoins,
   length,
   price,
-  baseUrl,
 }: {
   coins: Coin[];
-  baseUrl: string;
   length: number;
   price: number;
   getCoins(props: {
@@ -94,12 +92,7 @@ export function CoinList({
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {_coins.map((coin, index) => (
-          <CoinCard
-            key={`${coin.id}-${index}`}
-            coin={coin}
-            baseUrl={baseUrl}
-            price={price}
-          />
+          <CoinCard key={`${coin.id}-${index}`} coin={coin} price={price} />
         ))}
       </div>
 

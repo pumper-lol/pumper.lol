@@ -9,20 +9,14 @@ interface VerifyReCaptchaProps {
 
 interface ReCaptchaResponse {
   name: string;
-  event: {
-    expectedAction: string;
-    tokenProperties: {
-      valid: boolean;
-      hostname: string;
-      action: string;
-      createTime: string;
-    };
-    riskAnalysis: {
-      score: number;
-    };
+  riskAnalysis: {
+    score: number;
   };
   tokenProperties: {
     valid: boolean;
+    hostname: string;
+    action: string;
+    createTime: string;
   };
 }
 
@@ -51,17 +45,17 @@ export async function verifyReCaptcha({
       },
     );
 
-    console.log(data);
     return (
       data.tokenProperties.valid &&
       data.tokenProperties.action === expectedAction &&
       data.riskAnalysis.score > 0.5 // Adjust threshold as needed
     );
-  } catch (error: AxiosError) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError;
     console.error("ReCaptcha verification failed:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
+      status: axiosError.response?.status,
+      data: axiosError.response?.data,
+      message: axiosError.message,
     });
     return false;
   }
